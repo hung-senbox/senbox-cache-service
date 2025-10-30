@@ -1,0 +1,6 @@
+Services
+GET     /api/v1/admin/services
+POST    /api/v1/admin/services
+
+ServicesGroup
+POST /api/v1/admin/services/groups
