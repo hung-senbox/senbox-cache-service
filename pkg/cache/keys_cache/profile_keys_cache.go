@@ -1,0 +1,27 @@
+package keyscache
+
+import "github.com/hung-senbox/cache-service/pkg/helper"
+
+func UserCodeCacheKey(userID string) string {
+	return string(helper.ProfileServicePrefix) + "user_code:" + userID
+}
+
+func StudentCodeCacheKey(studentID string) string {
+	return string(helper.ProfileServicePrefix) + "student_code:" + studentID
+}
+
+func TeacherCodeCacheKey(teacherID string) string {
+	return string(helper.ProfileServicePrefix) + "teacher_code:" + teacherID
+}
+
+func StaffCodeCacheKey(staffID string) string {
+	return string(helper.ProfileServicePrefix) + "staff_code:" + staffID
+}
+
+func ParentCodeCacheKey(parentID string) string {
+	return string(helper.ProfileServicePrefix) + "parent_code:" + parentID
+}
+
+func ChildCodeCacheKey(childID string) string {
+	return string(helper.ProfileServicePrefix) + "child_code:" + childID
+}
