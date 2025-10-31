@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/hung-senbox/cache-service/pkg/cache"
-	keyscache "github.com/hung-senbox/cache-service/pkg/cache/keys_cache"
+	keys "github.com/hung-senbox/cache-service/pkg/cache/keys_cache"
 )
 
 type CachedProfileGateway interface {
@@ -49,25 +49,25 @@ func (c *cachedProfileService) getCode(
 // -------------------------
 
 func (c *cachedProfileService) GetStudentCode(ctx context.Context, studentID string) (string, error) {
-	return c.getCode(ctx, keyscache.StudentCodeCacheKey(studentID))
+	return c.getCode(ctx, keys.StudentCodeCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetTeacherCode(ctx context.Context, teacherID string) (string, error) {
-	return c.getCode(ctx, keyscache.TeacherCodeCacheKey(teacherID))
+	return c.getCode(ctx, keys.TeacherCodeCacheKey(teacherID))
 }
 
 func (c *cachedProfileService) GetParentCode(ctx context.Context, parentID string) (string, error) {
-	return c.getCode(ctx, keyscache.ParentCodeCacheKey(parentID))
+	return c.getCode(ctx, keys.ParentCodeCacheKey(parentID))
 }
 
 func (c *cachedProfileService) GetStaffCode(ctx context.Context, staffID string) (string, error) {
-	return c.getCode(ctx, keyscache.StaffCodeCacheKey(staffID))
+	return c.getCode(ctx, keys.StaffCodeCacheKey(staffID))
 }
 
 func (c *cachedProfileService) GetChildCode(ctx context.Context, childID string) (string, error) {
-	return c.getCode(ctx, keyscache.ChildCodeCacheKey(childID))
+	return c.getCode(ctx, keys.ChildCodeCacheKey(childID))
 }
 
 func (c *cachedProfileService) GetUserCode(ctx context.Context, userID string) (string, error) {
-	return c.getCode(ctx, keyscache.UserCodeCacheKey(userID))
+	return c.getCode(ctx, keys.UserCodeCacheKey(userID))
 }
