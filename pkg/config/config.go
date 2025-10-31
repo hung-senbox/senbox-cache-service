@@ -48,6 +48,7 @@ type Config struct {
 }
 
 // LoadConfig đọc YAML từ file
+// new commit
 func LoadConfig(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
