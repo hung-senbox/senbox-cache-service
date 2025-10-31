@@ -15,13 +15,15 @@ func InitRedisCacheFromFile(path string) (*cache.RedisCache, error) {
 		return nil, err
 	}
 
+	rc := cfg.Database.RedisCache
+
 	client := goredis.NewClient(&goredis.Options{
-		Addr:     fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port),
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
+		Addr:     fmt.Sprintf("%s:%s", rc.Host, rc.Port),
+		Password: rc.Password,
+		DB:       rc.DB,
 	})
 
-	// Test kết nối
+	// Check connect Redis
 	if err := client.Ping(context.Background()).Err(); err != nil {
 		return nil, fmt.Errorf("cannot connect to redis: %w", err)
 	}
