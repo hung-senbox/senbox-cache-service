@@ -18,24 +18,26 @@ type CachedProfileGateway interface {
 
 type cachedProfileService struct {
 	cache cache.Cache
-	ttl   int
 }
 
-func NewCachedProfileGateway(cache cache.Cache, ttl int) CachedProfileGateway {
+func NewCachedProfileGateway(cache cache.Cache) CachedProfileGateway {
 	return &cachedProfileService{
 		cache: cache,
-		ttl:   ttl,
 	}
 }
 
-// -------------------------
-// Generic helper
-// -------------------------
+// ========================
+// === HELPER METHODS ===
+// ========================
 
 func (c *cachedProfileService) getCode(
 	ctx context.Context,
 	cacheKey string,
 ) (string, error) {
+	if cacheKey == "" {
+		return "", nil
+	}
+
 	var cached string
 	if err := c.cache.Get(ctx, cacheKey, &cached); err == nil && cached != "" {
 		return cached, nil
@@ -44,30 +46,48 @@ func (c *cachedProfileService) getCode(
 	return "", nil
 }
 
-// -------------------------
-// Public methods
-// -------------------------
+// ========================
+// === GET CODE CACHE ===
+// ========================
+
+func (c *cachedProfileService) GetUserCode(ctx context.Context, userID string) (string, error) {
+	if userID == "" {
+		return "", nil
+	}
+	return c.getCode(ctx, keys.UserCodeCacheKey(userID))
+}
 
 func (c *cachedProfileService) GetStudentCode(ctx context.Context, studentID string) (string, error) {
+	if studentID == "" {
+		return "", nil
+	}
 	return c.getCode(ctx, keys.StudentCodeCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetTeacherCode(ctx context.Context, teacherID string) (string, error) {
+	if teacherID == "" {
+		return "", nil
+	}
 	return c.getCode(ctx, keys.TeacherCodeCacheKey(teacherID))
 }
 
-func (c *cachedProfileService) GetParentCode(ctx context.Context, parentID string) (string, error) {
-	return c.getCode(ctx, keys.ParentCodeCacheKey(parentID))
-}
-
 func (c *cachedProfileService) GetStaffCode(ctx context.Context, staffID string) (string, error) {
+	if staffID == "" {
+		return "", nil
+	}
 	return c.getCode(ctx, keys.StaffCodeCacheKey(staffID))
 }
 
-func (c *cachedProfileService) GetChildCode(ctx context.Context, childID string) (string, error) {
-	return c.getCode(ctx, keys.ChildCodeCacheKey(childID))
+func (c *cachedProfileService) GetParentCode(ctx context.Context, parentID string) (string, error) {
+	if parentID == "" {
+		return "", nil
+	}
+	return c.getCode(ctx, keys.ParentCodeCacheKey(parentID))
 }
 
-func (c *cachedProfileService) GetUserCode(ctx context.Context, userID string) (string, error) {
-	return c.getCode(ctx, keys.UserCodeCacheKey(userID))
+func (c *cachedProfileService) GetChildCode(ctx context.Context, childID string) (string, error) {
+	if childID == "" {
+		return "", nil
+	}
+	return c.getCode(ctx, keys.ChildCodeCacheKey(childID))
 }

@@ -74,7 +74,7 @@ import (
 )
 
 // Create caching service with default TTL
-cachingService := caching.NewCachingService(cache, 3600) // TTL: 1 hour
+cachingService := caching.NewCachingProfileService(cache, 3600) // TTL: 1 hour
 
 // Set codes for different profile types
 ctx := context.Background()
@@ -100,7 +100,7 @@ import (
 )
 
 // Create cached gateway
-cachedGateway := cached.NewCachedProfileGateway(cache, 3600)
+cachedGateway := cached.NewCachedProfileGateway(cache)
 
 // Retrieve codes
 ctx := context.Background()
