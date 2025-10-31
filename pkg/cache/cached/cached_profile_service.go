@@ -3,8 +3,8 @@ package cached
 import (
 	"context"
 
-	"github.com/hung-senbox/cache-service/pkg/cache"
-	keys "github.com/hung-senbox/cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
+	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
 )
 
 type CachedProfileGateway interface {

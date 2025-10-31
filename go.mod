@@ -1,4 +1,4 @@
-module github.com/hung-senbox/cache-service
+module github.com/hung-senbox/senbox-cache-service
 
 go 1.24.4
 

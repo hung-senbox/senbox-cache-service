@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hung-senbox/cache-service/pkg/cache"
-	"github.com/hung-senbox/cache-service/pkg/config"
+	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/config"
 	goredis "github.com/redis/go-redis/v9"
 )
 

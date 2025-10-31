@@ -1,6 +1,6 @@
 package keys
 
-import "github.com/hung-senbox/cache-service/helper"
+import "github.com/hung-senbox/senbox-cache-service/helper"
 
 func UserCodeCacheKey(userID string) string {
 	return string(helper.ProfileServicePrefix) + "user_code:" + userID
