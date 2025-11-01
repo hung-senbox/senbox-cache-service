@@ -17,10 +17,10 @@ type CachedProfileGateway interface {
 }
 
 type cachedProfileService struct {
-	cache cache.RedisCache
+	cache *cache.RedisCache
 }
 
-func NewCachedProfileGateway(cache cache.RedisCache) CachedProfileGateway {
+func NewCachedProfileGateway(cache *cache.RedisCache) CachedProfileGateway {
 	return &cachedProfileService{
 		cache: cache,
 	}

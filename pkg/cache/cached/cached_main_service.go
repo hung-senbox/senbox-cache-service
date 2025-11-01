@@ -21,10 +21,10 @@ type CachedMainGateway interface {
 }
 
 type cachedMainService struct {
-	cache cache.RedisCache
+	cache *cache.RedisCache
 }
 
-func NewCachedMainGateway(cache cache.RedisCache) CachedMainGateway {
+func NewCachedMainGateway(cache *cache.RedisCache) CachedMainGateway {
 	return &cachedMainService{
 		cache: cache,
 	}
