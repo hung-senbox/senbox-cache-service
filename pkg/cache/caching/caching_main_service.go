@@ -4,21 +4,20 @@ import (
 	"context"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
-	mainservicedto "github.com/hung-senbox/senbox-cache-service/pkg/cache/dto/main_service_dto"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
 )
 
 type CachingMainService interface {
-	SetUserCache(ctx context.Context, user *mainservicedto.UserResponse) error
-	SetStudentCache(ctx context.Context, student *mainservicedto.StudentResponse) error
-	SetTeacherCache(ctx context.Context, teacher *mainservicedto.TeacherResponse) error
-	SetStaffCache(ctx context.Context, staff *mainservicedto.StaffResponse) error
-	SetParentCache(ctx context.Context, parent *mainservicedto.ParentResponse) error
-	SetChildCache(ctx context.Context, child *mainservicedto.ChildResponse) error
-	SetTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, teacher *mainservicedto.TeacherResponse) error
-	SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, staff *mainservicedto.StaffResponse) error
-	SetUserByTeacherCacheKey(ctx context.Context, teacherID string, user *mainservicedto.UserResponse) error
-	SetParentByUserCacheKey(ctx context.Context, userID string, parent *mainservicedto.ParentResponse) error
+	SetUserCache(ctx context.Context, userID string, data interface{}) error
+	SetStudentCache(ctx context.Context, studentID string, data interface{}) error
+	SetTeacherCache(ctx context.Context, teacherID string, data interface{}) error
+	SetStaffCache(ctx context.Context, staffID string, data interface{}) error
+	SetParentCache(ctx context.Context, parentID string, data interface{}) error
+	SetChildCache(ctx context.Context, childID string, data interface{}) error
+	SetTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error
+	SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error
+	SetUserByTeacherCacheKey(ctx context.Context, teacherID string, data interface{}) error
+	SetParentByUserCacheKey(ctx context.Context, userID string, data interface{}) error
 
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
@@ -59,74 +58,74 @@ func (s *cachingMainService) deleteByKey(ctx context.Context, key string) error 
 // === SET CACHE ===
 // ========================
 
-func (s *cachingMainService) SetUserCache(ctx context.Context, user *mainservicedto.UserResponse) error {
-	if user == nil || user.ID == "" {
+func (s *cachingMainService) SetUserCache(ctx context.Context, userID string, data interface{}) error {
+	if userID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.UserCacheKey(user.ID), user)
+	return s.setByKey(ctx, keys.UserCacheKey(userID), data)
 }
 
-func (s *cachingMainService) SetStudentCache(ctx context.Context, student *mainservicedto.StudentResponse) error {
-	if student == nil || student.StudentID == "" {
+func (s *cachingMainService) SetStudentCache(ctx context.Context, studentID string, data interface{}) error {
+	if studentID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.StudentCacheKey(student.StudentID), student)
+	return s.setByKey(ctx, keys.StudentCacheKey(studentID), data)
 }
 
-func (s *cachingMainService) SetTeacherCache(ctx context.Context, teacher *mainservicedto.TeacherResponse) error {
-	if teacher == nil || teacher.TeacherID == "" {
+func (s *cachingMainService) SetTeacherCache(ctx context.Context, teacherID string, data interface{}) error {
+	if teacherID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.TeacherCacheKey(teacher.TeacherID), teacher)
+	return s.setByKey(ctx, keys.TeacherCacheKey(teacherID), data)
 }
 
-func (s *cachingMainService) SetParentCache(ctx context.Context, parent *mainservicedto.ParentResponse) error {
-	if parent == nil || parent.ParentID == "" {
+func (s *cachingMainService) SetParentCache(ctx context.Context, parentID string, data interface{}) error {
+	if parentID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.ParentCacheKey(parent.ParentID), parent)
+	return s.setByKey(ctx, keys.ParentCacheKey(parentID), data)
 }
 
-func (s *cachingMainService) SetStaffCache(ctx context.Context, staff *mainservicedto.StaffResponse) error {
-	if staff == nil || staff.StaffID == "" {
+func (s *cachingMainService) SetStaffCache(ctx context.Context, staffID string, data interface{}) error {
+	if staffID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.StaffCacheKey(staff.StaffID), staff)
+	return s.setByKey(ctx, keys.StaffCacheKey(staffID), data)
 }
 
-func (s *cachingMainService) SetChildCache(ctx context.Context, child *mainservicedto.ChildResponse) error {
-	if child == nil || child.ChildID == "" {
+func (s *cachingMainService) SetChildCache(ctx context.Context, childID string, data interface{}) error {
+	if childID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.ChildCacheKey(child.ChildID), child)
+	return s.setByKey(ctx, keys.ChildCacheKey(childID), data)
 }
 
-func (s *cachingMainService) SetTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, teacher *mainservicedto.TeacherResponse) error {
-	if teacher == nil || userID == "" || orgID == "" {
+func (s *cachingMainService) SetTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error {
+	if userID == "" || orgID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.TeacherByUserAndOrgCacheKey(userID, orgID), teacher)
+	return s.setByKey(ctx, keys.TeacherByUserAndOrgCacheKey(userID, orgID), data)
 }
 
-func (s *cachingMainService) SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, staff *mainservicedto.StaffResponse) error {
-	if staff == nil || userID == "" || orgID == "" {
+func (s *cachingMainService) SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error {
+	if userID == "" || orgID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.StaffByUserAndOrgCacheKey(userID, orgID), staff)
+	return s.setByKey(ctx, keys.StaffByUserAndOrgCacheKey(userID, orgID), data)
 }
 
-func (s *cachingMainService) SetUserByTeacherCacheKey(ctx context.Context, teacherID string, user *mainservicedto.UserResponse) error {
-	if user == nil || teacherID == "" {
+func (s *cachingMainService) SetUserByTeacherCacheKey(ctx context.Context, teacherID string, data interface{}) error {
+	if teacherID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.UserByTeacherCacheKey(teacherID), user)
+	return s.setByKey(ctx, keys.UserByTeacherCacheKey(teacherID), data)
 }
 
-func (s *cachingMainService) SetParentByUserCacheKey(ctx context.Context, userID string, parent *mainservicedto.ParentResponse) error {
-	if parent == nil || userID == "" {
+func (s *cachingMainService) SetParentByUserCacheKey(ctx context.Context, userID string, data interface{}) error {
+	if userID == "" || data == nil {
 		return nil
 	}
-	return s.setByKey(ctx, keys.ParentByUserCacheKey(userID), parent)
+	return s.setByKey(ctx, keys.ParentByUserCacheKey(userID), data)
 }
 
 // ========================
