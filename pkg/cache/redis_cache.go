@@ -37,6 +37,20 @@ func (r *RedisCache) Get(ctx context.Context, key string, dest interface{}) erro
 	if err != nil {
 		return err
 	}
+	
+	// Nếu dest là *string, thử unmarshal JSON trước
+	// Nếu thất bại (có thể là plain string), gán trực tiếp
+	if strPtr, ok := dest.(*string); ok {
+		var unmarshaled string
+		if err := json.Unmarshal([]byte(val), &unmarshaled); err == nil {
+			*strPtr = unmarshaled
+			return nil
+		}
+		// Nếu unmarshal thất bại, có thể là plain string (không có JSON encoding)
+		*strPtr = val
+		return nil
+	}
+	
 	return json.Unmarshal([]byte(val), dest)
 }
 
