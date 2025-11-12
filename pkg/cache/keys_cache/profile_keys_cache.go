@@ -25,3 +25,7 @@ func ParentCodeCacheKey(parentID string) string {
 func ChildCodeCacheKey(childID string) string {
 	return string(helper.ProfileServicePrefix) + "child_code:" + childID
 }
+
+func DeviceCodeCacheKey(deviceID string) string {
+	return string(helper.ProfileServicePrefix) + "device_code:" + deviceID
+}
