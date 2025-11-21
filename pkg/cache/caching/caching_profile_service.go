@@ -15,6 +15,7 @@ type CachingProfileService interface {
 	SetParentCode(ctx context.Context, parentID, code string) error
 	SetChildCode(ctx context.Context, childID, code string) error
 	SetDeviceCode(ctx context.Context, deviceID, code string) error
+	SetOrganizationCode(ctx context.Context, organizationID, code string) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -23,6 +24,7 @@ type CachingProfileService interface {
 	InvalidateParentCode(ctx context.Context, parentID string) error
 	InvalidateChildCode(ctx context.Context, childID string) error
 	InvalidateDeviceCode(ctx context.Context, deviceID string) error
+	InvalidateOrganizationCode(ctx context.Context, organizationID string) error
 }
 
 type cachingProfileService struct {
@@ -110,6 +112,14 @@ func (s *cachingProfileService) SetDeviceCode(ctx context.Context, deviceID, cod
 	return s.setByKey(ctx, key, code)
 }
 
+func (s *cachingProfileService) SetOrganizationCode(ctx context.Context, organizationID, code string) error {
+	if organizationID == "" || code == "" {
+		return nil
+	}
+	key := keys.OrganizationCodeCacheKey(organizationID)
+	return s.setByKey(ctx, key, code)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -160,4 +170,11 @@ func (s *cachingProfileService) InvalidateDeviceCode(ctx context.Context, device
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.DeviceCodeCacheKey(deviceID))
+}
+
+func (s *cachingProfileService) InvalidateOrganizationCode(ctx context.Context, organizationID string) error {
+	if organizationID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.OrganizationCodeCacheKey(organizationID))
 }

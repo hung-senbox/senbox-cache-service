@@ -15,6 +15,7 @@ type CachedProfileGateway interface {
 	GetParentCode(ctx context.Context, parentID string) (string, error)
 	GetChildCode(ctx context.Context, childID string) (string, error)
 	GetDeviceCode(ctx context.Context, deviceID string) (string, error)
+	GetOrganizationCode(ctx context.Context, organizationID string) (string, error)
 }
 
 type cachedProfileService struct {
@@ -98,4 +99,11 @@ func (c *cachedProfileService) GetDeviceCode(ctx context.Context, deviceID strin
 		return "", nil
 	}
 	return c.getCode(ctx, keys.DeviceCodeCacheKey(deviceID))
+}
+
+func (c *cachedProfileService) GetOrganizationCode(ctx context.Context, organizationID string) (string, error) {
+	if organizationID == "" {
+		return "", nil
+	}
+	return c.getCode(ctx, keys.OrganizationCodeCacheKey(organizationID))
 }

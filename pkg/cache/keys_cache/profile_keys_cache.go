@@ -29,3 +29,7 @@ func ChildCodeCacheKey(childID string) string {
 func DeviceCodeCacheKey(deviceID string) string {
 	return string(helper.ProfileServicePrefix) + "device_code:" + deviceID
 }
+
+func OrganizationCodeCacheKey(organizationID string) string {
+	return string(helper.ProfileServicePrefix) + "organization_code:" + organizationID
+}
