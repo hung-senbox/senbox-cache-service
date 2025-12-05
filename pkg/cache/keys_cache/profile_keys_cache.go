@@ -35,5 +35,5 @@ func OrganizationCodeCacheKey(organizationID string) string {
 }
 
 func ChildEnrollmentCodeCacheKey(childID string) string {
-	return string(helper.ProfileServicePrefix) + "child_enrollment_code:" + childID
+	return string(helper.ProfileServicePrefix) + "child_enrollment:" + childID
 }

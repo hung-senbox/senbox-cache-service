@@ -2,7 +2,6 @@ package caching
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
@@ -50,14 +49,10 @@ func (s *cachingProfileService) setByKey(ctx context.Context, key, code string) 
 }
 
 func (s *cachingProfileService) setByKeyWithJSON(ctx context.Context, key string, data interface{}) error {
-	if data == nil {
+	if key == "" || data == nil {
 		return nil
 	}
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	return s.cache.Set(ctx, key, jsonData, s.defaultTTL)
+	return s.cache.Set(ctx, key, data, s.defaultTTL)
 }
 
 func (s *cachingProfileService) deleteByKey(ctx context.Context, key string) error {
@@ -139,11 +134,7 @@ func (s *cachingProfileService) SetChildEnrollmentCode(ctx context.Context, chil
 		return nil
 	}
 	key := keys.ChildEnrollmentCodeCacheKey(childID)
-	enrollmentDataJSON, err := json.Marshal(enrollmentData)
-	if err != nil {
-		return err
-	}
-	return s.setByKeyWithJSON(ctx, key, enrollmentDataJSON)
+	return s.setByKeyWithJSON(ctx, key, enrollmentData)
 }
 
 // ========================
