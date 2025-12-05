@@ -16,6 +16,7 @@ type CachedProfileGateway interface {
 	GetChildCode(ctx context.Context, childID string) (string, error)
 	GetDeviceCode(ctx context.Context, deviceID string) (string, error)
 	GetOrganizationCode(ctx context.Context, organizationID string) (string, error)
+	GetChildEnrollmentCode(ctx context.Context, childID string) (map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -46,6 +47,26 @@ func (c *cachedProfileService) getCode(
 	}
 
 	return "", nil
+}
+
+func (c *cachedProfileService) getCacheJson(
+	ctx context.Context,
+	cacheKey string,
+) (map[string]interface{}, error) {
+	if cacheKey == "" {
+		return nil, nil
+	}
+
+	var result map[string]interface{}
+	if err := c.cache.Get(ctx, cacheKey, &result); err != nil {
+		return nil, err
+	}
+
+	if len(result) == 0 {
+		return nil, nil
+	}
+
+	return result, nil
 }
 
 // ========================
@@ -106,4 +127,11 @@ func (c *cachedProfileService) GetOrganizationCode(ctx context.Context, organiza
 		return "", nil
 	}
 	return c.getCode(ctx, keys.OrganizationCodeCacheKey(organizationID))
+}
+
+func (c *cachedProfileService) GetChildEnrollmentCode(ctx context.Context, childID string) (map[string]interface{}, error) {
+	if childID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.ChildEnrollmentCodeCacheKey(childID))
 }

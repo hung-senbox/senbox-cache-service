@@ -2,6 +2,7 @@ package caching
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
@@ -16,6 +17,7 @@ type CachingProfileService interface {
 	SetChildCode(ctx context.Context, childID, code string) error
 	SetDeviceCode(ctx context.Context, deviceID, code string) error
 	SetOrganizationCode(ctx context.Context, organizationID, code string) error
+	SetChildEnrollmentCode(ctx context.Context, childID string, enrollmentData map[string]interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -25,6 +27,7 @@ type CachingProfileService interface {
 	InvalidateChildCode(ctx context.Context, childID string) error
 	InvalidateDeviceCode(ctx context.Context, deviceID string) error
 	InvalidateOrganizationCode(ctx context.Context, organizationID string) error
+	InvalidateChildEnrollmentCode(ctx context.Context, childID string) error
 }
 
 type cachingProfileService struct {
@@ -44,6 +47,17 @@ func (s *cachingProfileService) setByKey(ctx context.Context, key, code string) 
 		return nil
 	}
 	return s.cache.Set(ctx, key, code, s.defaultTTL)
+}
+
+func (s *cachingProfileService) setByKeyWithJSON(ctx context.Context, key string, data interface{}) error {
+	if data == nil {
+		return nil
+	}
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	return s.cache.Set(ctx, key, jsonData, s.defaultTTL)
 }
 
 func (s *cachingProfileService) deleteByKey(ctx context.Context, key string) error {
@@ -120,6 +134,18 @@ func (s *cachingProfileService) SetOrganizationCode(ctx context.Context, organiz
 	return s.setByKey(ctx, key, code)
 }
 
+func (s *cachingProfileService) SetChildEnrollmentCode(ctx context.Context, childID string, enrollmentData map[string]interface{}) error {
+	if childID == "" || enrollmentData == nil {
+		return nil
+	}
+	key := keys.ChildEnrollmentCodeCacheKey(childID)
+	enrollmentDataJSON, err := json.Marshal(enrollmentData)
+	if err != nil {
+		return err
+	}
+	return s.setByKeyWithJSON(ctx, key, enrollmentDataJSON)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -177,4 +203,11 @@ func (s *cachingProfileService) InvalidateOrganizationCode(ctx context.Context, 
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.OrganizationCodeCacheKey(organizationID))
+}
+
+func (s *cachingProfileService) InvalidateChildEnrollmentCode(ctx context.Context, childID string) error {
+	if childID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ChildEnrollmentCodeCacheKey(childID))
 }
