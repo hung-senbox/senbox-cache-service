@@ -37,3 +37,24 @@ func OrganizationCodeCacheKey(organizationID string) string {
 func ChildEnrollmentCodeCacheKey(childID string) string {
 	return string(helper.ProfileServicePrefix) + "child_enrollment:" + childID
 }
+
+// language setting cache key
+func StudentLanguageSettingCacheKey(studentID string) string {
+	return string(helper.ProfileServicePrefix) + "student_language_setting:" + studentID
+}
+
+func TeacherLanguageSettingCacheKey(teacherID string) string {
+	return string(helper.ProfileServicePrefix) + "teacher_language_setting:" + teacherID
+}
+
+func StaffLanguageSettingCacheKey(staffID string) string {
+	return string(helper.ProfileServicePrefix) + "staff_language_setting:" + staffID
+}
+
+func ParentLanguageSettingCacheKey(parentID string) string {
+	return string(helper.ProfileServicePrefix) + "parent_language_setting:" + parentID
+}
+
+func ChildLanguageSettingCacheKey(childID string) string {
+	return string(helper.ProfileServicePrefix) + "child_language_setting:" + childID
+}

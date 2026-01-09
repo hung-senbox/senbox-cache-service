@@ -17,6 +17,13 @@ type CachedProfileGateway interface {
 	GetDeviceCode(ctx context.Context, deviceID string) (string, error)
 	GetOrganizationCode(ctx context.Context, organizationID string) (string, error)
 	GetChildEnrollment(ctx context.Context, childID string) (map[string]interface{}, error)
+
+	// language setting cache key
+	GetStudentLanguageSetting(ctx context.Context, studentID string) (map[string]interface{}, error)
+	GetTeacherLanguageSetting(ctx context.Context, teacherID string) (map[string]interface{}, error)
+	GetStaffLanguageSetting(ctx context.Context, staffID string) (map[string]interface{}, error)
+	GetParentLanguageSetting(ctx context.Context, parentID string) (map[string]interface{}, error)
+	GetChildLanguageSetting(ctx context.Context, childID string) (map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -134,4 +141,43 @@ func (c *cachedProfileService) GetChildEnrollment(ctx context.Context, childID s
 		return nil, nil
 	}
 	return c.getCacheJson(ctx, keys.ChildEnrollmentCodeCacheKey(childID))
+}
+
+// ========================
+// === GET LANGUAGE SETTING CACHE ===
+// ========================
+
+func (c *cachedProfileService) GetStudentLanguageSetting(ctx context.Context, studentID string) (map[string]interface{}, error) {
+	if studentID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.StudentLanguageSettingCacheKey(studentID))
+}
+
+func (c *cachedProfileService) GetTeacherLanguageSetting(ctx context.Context, teacherID string) (map[string]interface{}, error) {
+	if teacherID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.TeacherLanguageSettingCacheKey(teacherID))
+}
+
+func (c *cachedProfileService) GetStaffLanguageSetting(ctx context.Context, staffID string) (map[string]interface{}, error) {
+	if staffID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.StaffLanguageSettingCacheKey(staffID))
+}
+
+func (c *cachedProfileService) GetParentLanguageSetting(ctx context.Context, parentID string) (map[string]interface{}, error) {
+	if parentID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.ParentLanguageSettingCacheKey(parentID))
+}
+
+func (c *cachedProfileService) GetChildLanguageSetting(ctx context.Context, childID string) (map[string]interface{}, error) {
+	if childID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.ChildLanguageSettingCacheKey(childID))
 }

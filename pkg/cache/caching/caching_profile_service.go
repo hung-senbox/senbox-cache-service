@@ -17,6 +17,12 @@ type CachingProfileService interface {
 	SetDeviceCode(ctx context.Context, deviceID, code string) error
 	SetOrganizationCode(ctx context.Context, organizationID, code string) error
 	SetChildEnrollmentCode(ctx context.Context, childID string, enrollmentData map[string]interface{}) error
+	// language setting cache key
+	SetStudentLanguageSetting(ctx context.Context, studentID string, languageSetting map[string]interface{}) error
+	SetTeacherLanguageSetting(ctx context.Context, teacherID string, languageSetting map[string]interface{}) error
+	SetStaffLanguageSetting(ctx context.Context, staffID string, languageSetting map[string]interface{}) error
+	SetParentLanguageSetting(ctx context.Context, parentID string, languageSetting map[string]interface{}) error
+	SetChildLanguageSetting(ctx context.Context, childID string, languageSetting map[string]interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -27,6 +33,12 @@ type CachingProfileService interface {
 	InvalidateDeviceCode(ctx context.Context, deviceID string) error
 	InvalidateOrganizationCode(ctx context.Context, organizationID string) error
 	InvalidateChildEnrollmentCode(ctx context.Context, childID string) error
+	// language setting cache key
+	InvalidateStudentLanguageSetting(ctx context.Context, studentID string) error
+	InvalidateTeacherLanguageSetting(ctx context.Context, teacherID string) error
+	InvalidateStaffLanguageSetting(ctx context.Context, staffID string) error
+	InvalidateParentLanguageSetting(ctx context.Context, parentID string) error
+	InvalidateChildLanguageSetting(ctx context.Context, childID string) error
 }
 
 type cachingProfileService struct {
@@ -138,6 +150,49 @@ func (s *cachingProfileService) SetChildEnrollmentCode(ctx context.Context, chil
 }
 
 // ========================
+// === SET LANGUAGE SETTING CACHE ===
+// ========================
+func (s *cachingProfileService) SetStudentLanguageSetting(ctx context.Context, studentID string, languageSetting map[string]interface{}) error {
+	if studentID == "" || languageSetting == nil {
+		return nil
+	}
+	key := keys.StudentLanguageSettingCacheKey(studentID)
+	return s.setByKeyWithJSON(ctx, key, languageSetting)
+}
+
+func (s *cachingProfileService) SetTeacherLanguageSetting(ctx context.Context, teacherID string, languageSetting map[string]interface{}) error {
+	if teacherID == "" || languageSetting == nil {
+		return nil
+	}
+	key := keys.TeacherLanguageSettingCacheKey(teacherID)
+	return s.setByKeyWithJSON(ctx, key, languageSetting)
+}
+
+func (s *cachingProfileService) SetStaffLanguageSetting(ctx context.Context, staffID string, languageSetting map[string]interface{}) error {
+	if staffID == "" || languageSetting == nil {
+		return nil
+	}
+	key := keys.StaffLanguageSettingCacheKey(staffID)
+	return s.setByKeyWithJSON(ctx, key, languageSetting)
+}
+
+func (s *cachingProfileService) SetParentLanguageSetting(ctx context.Context, parentID string, languageSetting map[string]interface{}) error {
+	if parentID == "" || languageSetting == nil {
+		return nil
+	}
+	key := keys.ParentLanguageSettingCacheKey(parentID)
+	return s.setByKeyWithJSON(ctx, key, languageSetting)
+}
+
+func (s *cachingProfileService) SetChildLanguageSetting(ctx context.Context, childID string, languageSetting map[string]interface{}) error {
+	if childID == "" || languageSetting == nil {
+		return nil
+	}
+	key := keys.ChildLanguageSettingCacheKey(childID)
+	return s.setByKeyWithJSON(ctx, key, languageSetting)
+}
+
+// ========================
 // === INVALIDATE CACHE ===
 // ========================
 func (s *cachingProfileService) InvalidateUserCode(ctx context.Context, userID string) error {
@@ -201,4 +256,42 @@ func (s *cachingProfileService) InvalidateChildEnrollmentCode(ctx context.Contex
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ChildEnrollmentCodeCacheKey(childID))
+}
+
+// ========================
+// === INVALIDATE LANGUAGE SETTING CACHE ===
+// ========================
+func (s *cachingProfileService) InvalidateStudentLanguageSetting(ctx context.Context, studentID string) error {
+	if studentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StudentLanguageSettingCacheKey(studentID))
+}
+
+func (s *cachingProfileService) InvalidateTeacherLanguageSetting(ctx context.Context, teacherID string) error {
+	if teacherID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.TeacherLanguageSettingCacheKey(teacherID))
+}
+
+func (s *cachingProfileService) InvalidateStaffLanguageSetting(ctx context.Context, staffID string) error {
+	if staffID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StaffLanguageSettingCacheKey(staffID))
+}
+
+func (s *cachingProfileService) InvalidateParentLanguageSetting(ctx context.Context, parentID string) error {
+	if parentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ParentLanguageSettingCacheKey(parentID))
+}
+
+func (s *cachingProfileService) InvalidateChildLanguageSetting(ctx context.Context, childID string) error {
+	if childID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ChildLanguageSettingCacheKey(childID))
 }
