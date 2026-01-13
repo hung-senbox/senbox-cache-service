@@ -18,6 +18,15 @@ type CachingMainService interface {
 	SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error
 	SetUserByTeacherCacheKey(ctx context.Context, teacherID string, data interface{}) error
 	SetParentByUserCacheKey(ctx context.Context, userID string, data interface{}) error
+	// ========================
+	// === IMAGE CACHE ===
+	// ========================
+	SetUserImageCacheKey(ctx context.Context, userID string, data interface{}) error
+	SetChildImageCacheKey(ctx context.Context, childID string, data interface{}) error
+	SetStudentImageCacheKey(ctx context.Context, studentID string, data interface{}) error
+	SetTeacherImageCacheKey(ctx context.Context, teacherID string, data interface{}) error
+	SetStaffImageCacheKey(ctx context.Context, staffID string, data interface{}) error
+	SetParentImageCacheKey(ctx context.Context, parentID string, data interface{}) error
 
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
@@ -29,6 +38,15 @@ type CachingMainService interface {
 	InvalidateParentByUserCacheKey(ctx context.Context, userID string) error
 	InvalidateTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string) error
 	InvalidateStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string) error
+	// ========================
+	// === IMAGE CACHE ===
+	// ========================
+	InvalidateUserImageCacheKey(ctx context.Context, userID string) error
+	InvalidateChildImageCacheKey(ctx context.Context, childID string) error
+	InvalidateStudentImageCacheKey(ctx context.Context, studentID string) error
+	InvalidateTeacherImageCacheKey(ctx context.Context, teacherID string) error
+	InvalidateStaffImageCacheKey(ctx context.Context, staffID string) error
+	InvalidateParentImageCacheKey(ctx context.Context, parentID string) error
 }
 
 type cachingMainService struct {
@@ -128,6 +146,49 @@ func (s *cachingMainService) SetParentByUserCacheKey(ctx context.Context, userID
 	return s.setByKey(ctx, keys.ParentByUserCacheKey(userID), data)
 }
 
+// ======================== Image Cache ========================
+
+func (s *cachingMainService) SetUserImageCacheKey(ctx context.Context, userID string, data interface{}) error {
+	if userID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.UserImageCacheKey(userID), data)
+}
+func (s *cachingMainService) SetChildImageCacheKey(ctx context.Context, childID string, data interface{}) error {
+	if childID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.ChildImageCacheKey(childID), data)
+}
+
+func (s *cachingMainService) SetStudentImageCacheKey(ctx context.Context, studentID string, data interface{}) error {
+	if studentID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.StudentImageCacheKey(studentID), data)
+}
+
+func (s *cachingMainService) SetTeacherImageCacheKey(ctx context.Context, teacherID string, data interface{}) error {
+	if teacherID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.TeacherImageCacheKey(teacherID), data)
+}
+
+func (s *cachingMainService) SetStaffImageCacheKey(ctx context.Context, staffID string, data interface{}) error {
+	if staffID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.StaffImageCacheKey(staffID), data)
+}
+
+func (s *cachingMainService) SetParentImageCacheKey(ctx context.Context, parentID string, data interface{}) error {
+	if parentID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.ParentImageCacheKey(parentID), data)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -200,4 +261,47 @@ func (s *cachingMainService) InvalidateStaffByUserAndOrgCacheKey(ctx context.Con
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.StaffByUserAndOrgCacheKey(userID, orgID))
+}
+
+// ======================== Image Cache ========================
+func (s *cachingMainService) InvalidateUserImageCacheKey(ctx context.Context, userID string) error {
+	if userID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.UserImageCacheKey(userID))
+}
+
+func (s *cachingMainService) InvalidateChildImageCacheKey(ctx context.Context, childID string) error {
+	if childID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ChildImageCacheKey(childID))
+}
+
+func (s *cachingMainService) InvalidateStudentImageCacheKey(ctx context.Context, studentID string) error {
+	if studentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StudentImageCacheKey(studentID))
+}
+
+func (s *cachingMainService) InvalidateTeacherImageCacheKey(ctx context.Context, teacherID string) error {
+	if teacherID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.TeacherImageCacheKey(teacherID))
+}
+
+func (s *cachingMainService) InvalidateStaffImageCacheKey(ctx context.Context, staffID string) error {
+	if staffID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StaffImageCacheKey(staffID))
+}
+
+func (s *cachingMainService) InvalidateParentImageCacheKey(ctx context.Context, parentID string) error {
+	if parentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ParentImageCacheKey(parentID))
 }

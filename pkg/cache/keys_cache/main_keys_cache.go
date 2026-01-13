@@ -41,3 +41,28 @@ func UserByTeacherCacheKey(teacherID string) string {
 func ParentByUserCacheKey(userID string) string {
 	return string(helper.MainServicePrefixCache) + "parent-by-user:" + userID
 }
+
+// image
+func UserImageCacheKey(userID string) string {
+	return string(helper.MainServicePrefixCache) + "user-image:" + userID
+}
+
+func ChildImageCacheKey(childID string) string {
+	return string(helper.MainServicePrefixCache) + "child-image:" + childID
+}
+
+func StudentImageCacheKey(studentID string) string {
+	return string(helper.MainServicePrefixCache) + "student-image:" + studentID
+}
+
+func TeacherImageCacheKey(teacherID string) string {
+	return string(helper.MainServicePrefixCache) + "teacher-image:" + teacherID
+}
+
+func StaffImageCacheKey(staffID string) string {
+	return string(helper.MainServicePrefixCache) + "staff-image:" + staffID
+}
+
+func ParentImageCacheKey(parentID string) string {
+	return string(helper.MainServicePrefixCache) + "parent-image:" + parentID
+}
