@@ -18,6 +18,14 @@ type CachedMainGateway interface {
 	GetStaffByUserAndOrgCache(ctx context.Context, userID, orgID string) (map[string]interface{}, error)
 	GetUserByTeacherCache(ctx context.Context, teacherID string) (map[string]interface{}, error)
 	GetParentByUserCache(ctx context.Context, userID string) (map[string]interface{}, error)
+
+	// ======================== Image Cache ========================
+	GetUserImageCache(ctx context.Context, userID string) (map[string]interface{}, error)
+	GetStudentImageCache(ctx context.Context, studentID string) (map[string]interface{}, error)
+	GetTeacherImageCache(ctx context.Context, teacherID string) (map[string]interface{}, error)
+	GetStaffImageCache(ctx context.Context, staffID string) (map[string]interface{}, error)
+	GetParentImageCache(ctx context.Context, parentID string) (map[string]interface{}, error)
+	GetChildImageCache(ctx context.Context, childID string) (map[string]interface{}, error)
 }
 
 type cachedMainService struct {
@@ -126,4 +134,47 @@ func (c *cachedMainService) GetParentByUserCache(ctx context.Context, userID str
 		return nil, nil
 	}
 	return c.getCache(ctx, keys.ParentByUserCacheKey(userID))
+}
+
+// ======================== Image Cache ========================
+func (c *cachedMainService) GetUserImageCache(ctx context.Context, userID string) (map[string]interface{}, error) {
+	if userID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.UserImageCacheKey(userID))
+}
+
+func (c *cachedMainService) GetStudentImageCache(ctx context.Context, studentID string) (map[string]interface{}, error) {
+	if studentID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.StudentImageCacheKey(studentID))
+}
+
+func (c *cachedMainService) GetTeacherImageCache(ctx context.Context, teacherID string) (map[string]interface{}, error) {
+	if teacherID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.TeacherImageCacheKey(teacherID))
+}
+
+func (c *cachedMainService) GetStaffImageCache(ctx context.Context, staffID string) (map[string]interface{}, error) {
+	if staffID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.StaffImageCacheKey(staffID))
+}
+
+func (c *cachedMainService) GetParentImageCache(ctx context.Context, parentID string) (map[string]interface{}, error) {
+	if parentID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.ParentImageCacheKey(parentID))
+}
+
+func (c *cachedMainService) GetChildImageCache(ctx context.Context, childID string) (map[string]interface{}, error) {
+	if childID == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.ChildImageCacheKey(childID))
 }
