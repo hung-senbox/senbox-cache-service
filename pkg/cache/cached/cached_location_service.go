@@ -8,7 +8,7 @@ import (
 )
 
 type CachedLocationService interface {
-	GetLocationById(ctx context.Context, locationID uint) (map[string]interface{}, error)
+	GetLocationById(ctx context.Context, locationID string) (map[string]interface{}, error)
 }
 
 type cachedLocationService struct {
@@ -49,8 +49,8 @@ func (c *cachedLocationService) getCache(
 // === GET CACHE ===
 // ========================
 
-func (c *cachedLocationService) GetLocationById(ctx context.Context, locationID uint) (map[string]interface{}, error) {
-	if locationID == 0 {
+func (c *cachedLocationService) GetLocationById(ctx context.Context, locationID string) (map[string]interface{}, error) {
+	if locationID == "" {
 		return nil, nil
 	}
 	return c.getCache(ctx, keys.GetLocationByIdCacheKey(locationID))

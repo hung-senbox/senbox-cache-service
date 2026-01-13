@@ -1,11 +1,7 @@
 package keys
 
-import (
-	"strconv"
+import "github.com/hung-senbox/senbox-cache-service/helper"
 
-	"github.com/hung-senbox/senbox-cache-service/helper"
-)
-
-func GetLocationByIdCacheKey(locationID uint) string {
-	return string(helper.LocationServicePrefix) + "location_by_id:" + strconv.FormatUint(uint64(locationID), 10)
+func GetLocationByIdCacheKey(locationID string) string {
+	return string(helper.LocationServicePrefix) + "location_by_id:" + locationID
 }

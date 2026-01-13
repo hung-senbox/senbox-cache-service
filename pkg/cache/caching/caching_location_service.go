@@ -8,8 +8,8 @@ import (
 )
 
 type CachingLocationService interface {
-	SetLocationById(ctx context.Context, locationID uint, data interface{}) error
-	InvalidateLocationById(ctx context.Context, locationID uint) error
+	SetLocationById(ctx context.Context, locationID string, data interface{}) error
+	InvalidateLocationById(ctx context.Context, locationID string) error
 }
 
 type cachingLocationService struct {
@@ -39,8 +39,8 @@ func (s *cachingLocationService) deleteByKey(ctx context.Context, key string) er
 // === SET CACHE ===
 // ========================
 
-func (s *cachingLocationService) SetLocationById(ctx context.Context, locationID uint, data interface{}) error {
-	if locationID == 0 || data == nil {
+func (s *cachingLocationService) SetLocationById(ctx context.Context, locationID string, data interface{}) error {
+	if locationID == "" || data == nil {
 		return nil
 	}
 	return s.setByKey(ctx, keys.GetLocationByIdCacheKey(locationID), data)
@@ -50,8 +50,8 @@ func (s *cachingLocationService) SetLocationById(ctx context.Context, locationID
 // === INVALIDATE CACHE ===
 // ========================
 
-func (s *cachingLocationService) InvalidateLocationById(ctx context.Context, locationID uint) error {
-	if locationID == 0 {
+func (s *cachingLocationService) InvalidateLocationById(ctx context.Context, locationID string) error {
+	if locationID == "" {
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.GetLocationByIdCacheKey(locationID))
