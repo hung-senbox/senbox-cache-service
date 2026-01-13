@@ -6,4 +6,5 @@ const (
 	MainServicePrefixCache CachePrefix = "main-service:"
 	ProfileServicePrefix   CachePrefix = "profile-service:"
 	CommonServicePrefix    CachePrefix = "common-service:"
+	LocationServicePrefix  CachePrefix = "location-service:"
 )
