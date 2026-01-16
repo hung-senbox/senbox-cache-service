@@ -24,12 +24,12 @@ type CachingProfileService interface {
 	SetParentLanguageSetting(ctx context.Context, parentID string, languageSetting map[string]interface{}) error
 	SetChildLanguageSetting(ctx context.Context, childID string, languageSetting map[string]interface{}) error
 	// blocked user cache key
-	SetBlockedUserCacheKey(ctx context.Context, userID string) error
-	SetBlockedStudentCacheKey(ctx context.Context, studentID string) error
-	SetBlockedTeacherCacheKey(ctx context.Context, teacherID string) error
-	SetBlockedStaffCacheKey(ctx context.Context, staffID string) error
-	SetBlockedParentCacheKey(ctx context.Context, parentID string) error
-	SetBlockedChildCacheKey(ctx context.Context, childID string) error
+	SetBlockedUserCacheKey(ctx context.Context, userID string, blockedData map[string]interface{}) error
+	SetBlockedStudentCacheKey(ctx context.Context, studentID string, blockedData map[string]interface{}) error
+	SetBlockedTeacherCacheKey(ctx context.Context, teacherID string, blockedData map[string]interface{}) error
+	SetBlockedStaffCacheKey(ctx context.Context, staffID string, blockedData map[string]interface{}) error
+	SetBlockedParentCacheKey(ctx context.Context, parentID string, blockedData map[string]interface{}) error
+	SetBlockedChildCacheKey(ctx context.Context, childID string, blockedData map[string]interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -209,52 +209,52 @@ func (s *cachingProfileService) SetChildLanguageSetting(ctx context.Context, chi
 // ========================
 // === SET BLOCKED USER CACHE KEY ===
 // ========================
-func (s *cachingProfileService) SetBlockedUserCacheKey(ctx context.Context, userID string) error {
+func (s *cachingProfileService) SetBlockedUserCacheKey(ctx context.Context, userID string, blockedData map[string]interface{}) error {
 	if userID == "" {
 		return nil
 	}
 	key := keys.BlockedUserCacheKey(userID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
-func (s *cachingProfileService) SetBlockedStudentCacheKey(ctx context.Context, studentID string) error {
+func (s *cachingProfileService) SetBlockedStudentCacheKey(ctx context.Context, studentID string, blockedData map[string]interface{}) error {
 	if studentID == "" {
 		return nil
 	}
 	key := keys.BlockedStudentCacheKey(studentID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
-func (s *cachingProfileService) SetBlockedTeacherCacheKey(ctx context.Context, teacherID string) error {
+func (s *cachingProfileService) SetBlockedTeacherCacheKey(ctx context.Context, teacherID string, blockedData map[string]interface{}) error {
 	if teacherID == "" {
 		return nil
 	}
 	key := keys.BlockedTeacherCacheKey(teacherID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
-func (s *cachingProfileService) SetBlockedStaffCacheKey(ctx context.Context, staffID string) error {
+func (s *cachingProfileService) SetBlockedStaffCacheKey(ctx context.Context, staffID string, blockedData map[string]interface{}) error {
 	if staffID == "" {
 		return nil
 	}
 	key := keys.BlockedStaffCacheKey(staffID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
-func (s *cachingProfileService) SetBlockedParentCacheKey(ctx context.Context, parentID string) error {
+func (s *cachingProfileService) SetBlockedParentCacheKey(ctx context.Context, parentID string, blockedData map[string]interface{}) error {
 	if parentID == "" {
 		return nil
 	}
 	key := keys.BlockedParentCacheKey(parentID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
-func (s *cachingProfileService) SetBlockedChildCacheKey(ctx context.Context, childID string) error {
+func (s *cachingProfileService) SetBlockedChildCacheKey(ctx context.Context, childID string, blockedData map[string]interface{}) error {
 	if childID == "" {
 		return nil
 	}
 	key := keys.BlockedChildCacheKey(childID)
-	return s.setByKey(ctx, key, "true")
+	return s.setByKeyWithJSON(ctx, key, blockedData)
 }
 
 // ========================
