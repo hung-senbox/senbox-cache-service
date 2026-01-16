@@ -58,3 +58,28 @@ func ParentLanguageSettingCacheKey(parentID string) string {
 func ChildLanguageSettingCacheKey(childID string) string {
 	return string(helper.ProfileServicePrefix) + "child_language_setting:" + childID
 }
+
+// Blocked User Cache Key
+func BlockedUserCacheKey(userID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_user:" + userID
+}
+
+func BlockedStudentCacheKey(studentID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_student:" + studentID
+}
+
+func BlockedTeacherCacheKey(teacherID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_teacher:" + teacherID
+}
+
+func BlockedStaffCacheKey(staffID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_staff:" + staffID
+}
+
+func BlockedParentCacheKey(parentID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_parent:" + parentID
+}
+
+func BlockedChildCacheKey(childID string) string {
+	return string(helper.ProfileServicePrefix) + "blocked_child:" + childID
+}

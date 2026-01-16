@@ -24,6 +24,14 @@ type CachedProfileGateway interface {
 	GetStaffLanguageSetting(ctx context.Context, staffID string) (map[string]interface{}, error)
 	GetParentLanguageSetting(ctx context.Context, parentID string) (map[string]interface{}, error)
 	GetChildLanguageSetting(ctx context.Context, childID string) (map[string]interface{}, error)
+
+	// Get blocked user cache key
+	GetBlockedUserCacheKey(ctx context.Context, userID string) (map[string]interface{}, error)
+	GetBlockedStudentCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error)
+	GetBlockedTeacherCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error)
+	GetBlockedStaffCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error)
+	GetBlockedParentCacheKey(ctx context.Context, parentID string) (map[string]interface{}, error)
+	GetBlockedChildCacheKey(ctx context.Context, childID string) (map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -180,4 +188,50 @@ func (c *cachedProfileService) GetChildLanguageSetting(ctx context.Context, chil
 		return nil, nil
 	}
 	return c.getCacheJson(ctx, keys.ChildLanguageSettingCacheKey(childID))
+}
+
+// ========================
+// === GET BLOCKED USER CACHE KEY ===
+// ========================
+
+func (c *cachedProfileService) GetBlockedUserCacheKey(ctx context.Context, userID string) (map[string]interface{}, error) {
+	if userID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedUserCacheKey(userID))
+}
+
+func (c *cachedProfileService) GetBlockedStudentCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error) {
+	if studentID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedStudentCacheKey(studentID))
+}
+
+func (c *cachedProfileService) GetBlockedTeacherCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error) {
+	if teacherID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedTeacherCacheKey(teacherID))
+}
+
+func (c *cachedProfileService) GetBlockedStaffCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error) {
+	if staffID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedStaffCacheKey(staffID))
+}
+
+func (c *cachedProfileService) GetBlockedParentCacheKey(ctx context.Context, parentID string) (map[string]interface{}, error) {
+	if parentID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedParentCacheKey(parentID))
+}
+
+func (c *cachedProfileService) GetBlockedChildCacheKey(ctx context.Context, childID string) (map[string]interface{}, error) {
+	if childID == "" {
+		return nil, nil
+	}
+	return c.getCacheJson(ctx, keys.BlockedChildCacheKey(childID))
 }

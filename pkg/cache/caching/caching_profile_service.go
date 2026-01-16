@@ -23,6 +23,13 @@ type CachingProfileService interface {
 	SetStaffLanguageSetting(ctx context.Context, staffID string, languageSetting map[string]interface{}) error
 	SetParentLanguageSetting(ctx context.Context, parentID string, languageSetting map[string]interface{}) error
 	SetChildLanguageSetting(ctx context.Context, childID string, languageSetting map[string]interface{}) error
+	// blocked user cache key
+	SetBlockedUserCacheKey(ctx context.Context, userID string) error
+	SetBlockedStudentCacheKey(ctx context.Context, studentID string) error
+	SetBlockedTeacherCacheKey(ctx context.Context, teacherID string) error
+	SetBlockedStaffCacheKey(ctx context.Context, staffID string) error
+	SetBlockedParentCacheKey(ctx context.Context, parentID string) error
+	SetBlockedChildCacheKey(ctx context.Context, childID string) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -39,6 +46,13 @@ type CachingProfileService interface {
 	InvalidateStaffLanguageSetting(ctx context.Context, staffID string) error
 	InvalidateParentLanguageSetting(ctx context.Context, parentID string) error
 	InvalidateChildLanguageSetting(ctx context.Context, childID string) error
+	// blocked user cache key
+	InvalidateBlockedUserCacheKey(ctx context.Context, userID string) error
+	InvalidateBlockedStudentCacheKey(ctx context.Context, studentID string) error
+	InvalidateBlockedTeacherCacheKey(ctx context.Context, teacherID string) error
+	InvalidateBlockedStaffCacheKey(ctx context.Context, staffID string) error
+	InvalidateBlockedParentCacheKey(ctx context.Context, parentID string) error
+	InvalidateBlockedChildCacheKey(ctx context.Context, childID string) error
 }
 
 type cachingProfileService struct {
@@ -193,6 +207,57 @@ func (s *cachingProfileService) SetChildLanguageSetting(ctx context.Context, chi
 }
 
 // ========================
+// === SET BLOCKED USER CACHE KEY ===
+// ========================
+func (s *cachingProfileService) SetBlockedUserCacheKey(ctx context.Context, userID string) error {
+	if userID == "" {
+		return nil
+	}
+	key := keys.BlockedUserCacheKey(userID)
+	return s.setByKey(ctx, key, "true")
+}
+
+func (s *cachingProfileService) SetBlockedStudentCacheKey(ctx context.Context, studentID string) error {
+	if studentID == "" {
+		return nil
+	}
+	key := keys.BlockedStudentCacheKey(studentID)
+	return s.setByKey(ctx, key, "true")
+}
+
+func (s *cachingProfileService) SetBlockedTeacherCacheKey(ctx context.Context, teacherID string) error {
+	if teacherID == "" {
+		return nil
+	}
+	key := keys.BlockedTeacherCacheKey(teacherID)
+	return s.setByKey(ctx, key, "true")
+}
+
+func (s *cachingProfileService) SetBlockedStaffCacheKey(ctx context.Context, staffID string) error {
+	if staffID == "" {
+		return nil
+	}
+	key := keys.BlockedStaffCacheKey(staffID)
+	return s.setByKey(ctx, key, "true")
+}
+
+func (s *cachingProfileService) SetBlockedParentCacheKey(ctx context.Context, parentID string) error {
+	if parentID == "" {
+		return nil
+	}
+	key := keys.BlockedParentCacheKey(parentID)
+	return s.setByKey(ctx, key, "true")
+}
+
+func (s *cachingProfileService) SetBlockedChildCacheKey(ctx context.Context, childID string) error {
+	if childID == "" {
+		return nil
+	}
+	key := keys.BlockedChildCacheKey(childID)
+	return s.setByKey(ctx, key, "true")
+}
+
+// ========================
 // === INVALIDATE CACHE ===
 // ========================
 func (s *cachingProfileService) InvalidateUserCode(ctx context.Context, userID string) error {
@@ -294,4 +359,49 @@ func (s *cachingProfileService) InvalidateChildLanguageSetting(ctx context.Conte
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ChildLanguageSettingCacheKey(childID))
+}
+
+// ========================
+// === INVALIDATE BLOCKED USER CACHE KEY ===
+// ========================
+func (s *cachingProfileService) InvalidateBlockedUserCacheKey(ctx context.Context, userID string) error {
+	if userID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedUserCacheKey(userID))
+}
+
+func (s *cachingProfileService) InvalidateBlockedStudentCacheKey(ctx context.Context, studentID string) error {
+	if studentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedStudentCacheKey(studentID))
+}
+
+func (s *cachingProfileService) InvalidateBlockedTeacherCacheKey(ctx context.Context, teacherID string) error {
+	if teacherID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedTeacherCacheKey(teacherID))
+}
+
+func (s *cachingProfileService) InvalidateBlockedStaffCacheKey(ctx context.Context, staffID string) error {
+	if staffID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedStaffCacheKey(staffID))
+}
+
+func (s *cachingProfileService) InvalidateBlockedParentCacheKey(ctx context.Context, parentID string) error {
+	if parentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedParentCacheKey(parentID))
+}
+
+func (s *cachingProfileService) InvalidateBlockedChildCacheKey(ctx context.Context, childID string) error {
+	if childID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.BlockedChildCacheKey(childID))
 }
