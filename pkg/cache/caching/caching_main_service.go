@@ -28,6 +28,9 @@ type CachingMainService interface {
 	SetStaffImageCacheKey(ctx context.Context, staffID string, data interface{}) error
 	SetParentImageCacheKey(ctx context.Context, parentID string, data interface{}) error
 
+	// ======================== Image by key Cache ========================
+	SetImageByKeyCacheKey(ctx context.Context, key string, data string) error
+
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
 	InvalidateParentCache(ctx context.Context, parentID string) error
@@ -190,6 +193,13 @@ func (s *cachingMainService) SetParentImageCacheKey(ctx context.Context, parentI
 		return nil
 	}
 	return s.setByKey(ctx, keys.ParentImageCacheKey(parentID), data)
+}
+
+func (s *cachingMainService) SetImageByKeyCacheKey(ctx context.Context, key string, data string) error {
+	if key == "" || data == "" {
+		return nil
+	}
+	return s.setByKey(ctx, keys.ImageByKeyCacheKey(key), data)
 }
 
 // ========================
