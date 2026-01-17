@@ -66,3 +66,8 @@ func StaffImageCacheKey(staffID string) string {
 func ParentImageCacheKey(parentID string) string {
 	return string(helper.MainServicePrefixCache) + "parent-image:" + parentID
 }
+
+// image by key
+func ImageByKeyCacheKey(key string) string {
+	return string(helper.MainServicePrefixCache) + "image-by-key:" + key
+}

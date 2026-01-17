@@ -26,6 +26,9 @@ type CachedMainGateway interface {
 	GetStaffImageCache(ctx context.Context, staffID string) (map[string]interface{}, error)
 	GetParentImageCache(ctx context.Context, parentID string) (map[string]interface{}, error)
 	GetChildImageCache(ctx context.Context, childID string) (map[string]interface{}, error)
+
+	// ======================== Image by key Cache ========================
+	GetImageByKeyCache(ctx context.Context, key string) (map[string]interface{}, error)
 }
 
 type cachedMainService struct {
@@ -177,4 +180,12 @@ func (c *cachedMainService) GetChildImageCache(ctx context.Context, childID stri
 		return nil, nil
 	}
 	return c.getCache(ctx, keys.ChildImageCacheKey(childID))
+}
+
+// ======================== Image by key Cache ========================
+func (c *cachedMainService) GetImageByKeyCache(ctx context.Context, key string) (map[string]interface{}, error) {
+	if key == "" {
+		return nil, nil
+	}
+	return c.getCache(ctx, keys.ImageByKeyCacheKey(key))
 }

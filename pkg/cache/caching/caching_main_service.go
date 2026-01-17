@@ -47,6 +47,9 @@ type CachingMainService interface {
 	InvalidateTeacherImageCacheKey(ctx context.Context, teacherID string) error
 	InvalidateStaffImageCacheKey(ctx context.Context, staffID string) error
 	InvalidateParentImageCacheKey(ctx context.Context, parentID string) error
+
+	// ======================== Image by key Cache ========================
+	InvalidateImageByKeyCacheKey(ctx context.Context, key string) error
 }
 
 type cachingMainService struct {
@@ -304,4 +307,11 @@ func (s *cachingMainService) InvalidateParentImageCacheKey(ctx context.Context, 
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ParentImageCacheKey(parentID))
+}
+
+func (s *cachingMainService) InvalidateImageByKeyCacheKey(ctx context.Context, key string) error {
+	if key == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ImageByKeyCacheKey(key))
 }
