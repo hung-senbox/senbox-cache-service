@@ -44,45 +44,6 @@ func NewCachedProfileGateway(cache *cache.RedisCache) CachedProfileGateway {
 	}
 }
 
-// ========================
-// === HELPER METHODS ===
-// ========================
-
-func (c *cachedProfileService) getCode(
-	ctx context.Context,
-	cacheKey string,
-) (string, error) {
-	if cacheKey == "" {
-		return "", nil
-	}
-
-	var cached string
-	if err := c.cache.Get(ctx, cacheKey, &cached); err == nil && cached != "" {
-		return cached, nil
-	}
-
-	return "", nil
-}
-
-func (c *cachedProfileService) getCacheJson(
-	ctx context.Context,
-	cacheKey string,
-) (map[string]interface{}, error) {
-	if cacheKey == "" {
-		return nil, nil
-	}
-
-	var result map[string]interface{}
-	if err := c.cache.Get(ctx, cacheKey, &result); err != nil {
-		return nil, err
-	}
-
-	if len(result) == 0 {
-		return nil, nil
-	}
-
-	return result, nil
-}
 
 // ========================
 // === GET CODE CACHE ===
@@ -92,63 +53,63 @@ func (c *cachedProfileService) GetUserCode(ctx context.Context, userID string) (
 	if userID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.UserCodeCacheKey(userID))
+	return getCacheString(c.cache, ctx, keys.UserCodeCacheKey(userID))
 }
 
 func (c *cachedProfileService) GetStudentCode(ctx context.Context, studentID string) (string, error) {
 	if studentID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.StudentCodeCacheKey(studentID))
+	return getCacheString(c.cache ,ctx, keys.StudentCodeCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetTeacherCode(ctx context.Context, teacherID string) (string, error) {
 	if teacherID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.TeacherCodeCacheKey(teacherID))
+	return getCacheString(c.cache, ctx, keys.TeacherCodeCacheKey(teacherID))
 }
 
 func (c *cachedProfileService) GetStaffCode(ctx context.Context, staffID string) (string, error) {
 	if staffID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.StaffCodeCacheKey(staffID))
+	return getCacheString(c.cache, ctx, keys.StaffCodeCacheKey(staffID))
 }
 
 func (c *cachedProfileService) GetParentCode(ctx context.Context, parentID string) (string, error) {
 	if parentID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.ParentCodeCacheKey(parentID))
+	return getCacheString(c.cache, ctx, keys.ParentCodeCacheKey(parentID))
 }
 
 func (c *cachedProfileService) GetChildCode(ctx context.Context, childID string) (string, error) {
 	if childID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.ChildCodeCacheKey(childID))
+	return getCacheString(c.cache, ctx, keys.ChildCodeCacheKey(childID))
 }
 
 func (c *cachedProfileService) GetDeviceCode(ctx context.Context, deviceID string) (string, error) {
 	if deviceID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.DeviceCodeCacheKey(deviceID))
+	return getCacheString(c.cache, ctx, keys.DeviceCodeCacheKey(deviceID))
 }
 
 func (c *cachedProfileService) GetOrganizationCode(ctx context.Context, organizationID string) (string, error) {
 	if organizationID == "" {
 		return "", nil
 	}
-	return c.getCode(ctx, keys.OrganizationCodeCacheKey(organizationID))
+	return getCacheString(c.cache, ctx, keys.OrganizationCodeCacheKey(organizationID))
 }
 
 func (c *cachedProfileService) GetChildEnrollment(ctx context.Context, childID string) (map[string]interface{}, error) {
 	if childID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.ChildEnrollmentCodeCacheKey(childID))
+	return getCache(c.cache, ctx, keys.ChildEnrollmentCodeCacheKey(childID))
 }
 
 // ========================
@@ -159,35 +120,35 @@ func (c *cachedProfileService) GetStudentLanguageSetting(ctx context.Context, st
 	if studentID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.StudentLanguageSettingCacheKey(studentID))
+	return getCache(c.cache, ctx, keys.StudentLanguageSettingCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetTeacherLanguageSetting(ctx context.Context, teacherID string) (map[string]interface{}, error) {
 	if teacherID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.TeacherLanguageSettingCacheKey(teacherID))
+	return getCache(c.cache, ctx, keys.TeacherLanguageSettingCacheKey(teacherID))
 }
 
 func (c *cachedProfileService) GetStaffLanguageSetting(ctx context.Context, staffID string) (map[string]interface{}, error) {
 	if staffID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.StaffLanguageSettingCacheKey(staffID))
+	return getCache(c.cache, ctx, keys.StaffLanguageSettingCacheKey(staffID))
 }
 
 func (c *cachedProfileService) GetParentLanguageSetting(ctx context.Context, parentID string) (map[string]interface{}, error) {
 	if parentID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.ParentLanguageSettingCacheKey(parentID))
+	return getCache(c.cache, ctx, keys.ParentLanguageSettingCacheKey(parentID))
 }
 
 func (c *cachedProfileService) GetChildLanguageSetting(ctx context.Context, childID string) (map[string]interface{}, error) {
 	if childID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.ChildLanguageSettingCacheKey(childID))
+	return getCache(c.cache, ctx, keys.ChildLanguageSettingCacheKey(childID))
 }
 
 // ========================
@@ -198,40 +159,40 @@ func (c *cachedProfileService) GetBlockedUserCacheKey(ctx context.Context, userI
 	if userID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedUserCacheKey(userID))
+	return getCache(c.cache, ctx, keys.BlockedUserCacheKey(userID))
 }
 
 func (c *cachedProfileService) GetBlockedStudentCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error) {
 	if studentID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedStudentCacheKey(studentID))
+	return getCache(c.cache, ctx, keys.BlockedStudentCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetBlockedTeacherCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error) {
 	if teacherID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedTeacherCacheKey(teacherID))
+	return getCache(c.cache, ctx, keys.BlockedTeacherCacheKey(teacherID))
 }
 
 func (c *cachedProfileService) GetBlockedStaffCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error) {
 	if staffID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedStaffCacheKey(staffID))
+	return getCache(c.cache, ctx, keys.BlockedStaffCacheKey(staffID))
 }
 
 func (c *cachedProfileService) GetBlockedParentCacheKey(ctx context.Context, parentID string) (map[string]interface{}, error) {
 	if parentID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedParentCacheKey(parentID))
+	return getCache(c.cache, ctx, keys.BlockedParentCacheKey(parentID))
 }
 
 func (c *cachedProfileService) GetBlockedChildCacheKey(ctx context.Context, childID string) (map[string]interface{}, error) {
 	if childID == "" {
 		return nil, nil
 	}
-	return c.getCacheJson(ctx, keys.BlockedChildCacheKey(childID))
+	return getCache(c.cache, ctx, keys.BlockedChildCacheKey(childID))
 }

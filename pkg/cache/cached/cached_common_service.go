@@ -22,30 +22,6 @@ func NewCachedCommonGateway(cache *cache.RedisCache) CachedCommonGateway {
 }
 
 // ========================
-// === HELPER METHODS ===
-// ========================
-
-func (c *cachedCommonService) getCache(
-	ctx context.Context,
-	cacheKey string,
-) (map[string]interface{}, error) {
-	if cacheKey == "" {
-		return nil, nil
-	}
-
-	var result map[string]interface{}
-	if err := c.cache.Get(ctx, cacheKey, &result); err != nil {
-		return nil, err
-	}
-
-	if len(result) == 0 {
-		return nil, nil
-	}
-
-	return result, nil
-}
-
-// ========================
 // === GET CACHE ===
 // ========================
 
@@ -53,5 +29,5 @@ func (c *cachedCommonService) GetLanguageById(ctx context.Context, languageID ui
 	if languageID == 0 {
 		return nil, nil
 	}
-	return c.getCache(ctx, keys.GetLanguageByIdCacheKey(languageID))
+	return getCache(c.cache, ctx, keys.GetLanguageByIdCacheKey(languageID))
 }
