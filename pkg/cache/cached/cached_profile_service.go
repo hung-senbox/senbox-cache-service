@@ -32,6 +32,9 @@ type CachedProfileGateway interface {
 	GetBlockedStaffCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error)
 	GetBlockedParentCacheKey(ctx context.Context, parentID string) (map[string]interface{}, error)
 	GetBlockedChildCacheKey(ctx context.Context, childID string) (map[string]interface{}, error)
+
+	// Get parent report languages
+	GetParentReportLanguages(ctx context.Context, parentID string) (map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -43,7 +46,6 @@ func NewCachedProfileGateway(cache *cache.RedisCache) CachedProfileGateway {
 		cache: cache,
 	}
 }
-
 
 // ========================
 // === GET CODE CACHE ===
@@ -60,7 +62,7 @@ func (c *cachedProfileService) GetStudentCode(ctx context.Context, studentID str
 	if studentID == "" {
 		return "", nil
 	}
-	return getCacheString(c.cache ,ctx, keys.StudentCodeCacheKey(studentID))
+	return getCacheString(c.cache, ctx, keys.StudentCodeCacheKey(studentID))
 }
 
 func (c *cachedProfileService) GetTeacherCode(ctx context.Context, teacherID string) (string, error) {
@@ -195,4 +197,14 @@ func (c *cachedProfileService) GetBlockedChildCacheKey(ctx context.Context, chil
 		return nil, nil
 	}
 	return getCache(c.cache, ctx, keys.BlockedChildCacheKey(childID))
+}
+
+// ========================
+// === GET PARENT REPORT LANGUAGES ===
+// ========================
+func (c *cachedProfileService) GetParentReportLanguages(ctx context.Context, parentID string) (map[string]interface{}, error) {
+	if parentID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.ParentReportLanguagesCacheKey(parentID))
 }

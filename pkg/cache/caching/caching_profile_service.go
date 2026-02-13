@@ -30,6 +30,8 @@ type CachingProfileService interface {
 	SetBlockedStaffCacheKey(ctx context.Context, staffID string, data interface{}) error
 	SetBlockedParentCacheKey(ctx context.Context, parentID string, data interface{}) error
 	SetBlockedChildCacheKey(ctx context.Context, childID string, data interface{}) error
+	// parent report langues
+	SetParentReportLanguages(ctx context.Context, parentID string, data map[string]interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -53,6 +55,8 @@ type CachingProfileService interface {
 	InvalidateBlockedStaffCacheKey(ctx context.Context, staffID string) error
 	InvalidateBlockedParentCacheKey(ctx context.Context, parentID string) error
 	InvalidateBlockedChildCacheKey(ctx context.Context, childID string) error
+	// parent report languages
+	InvalidateParentReportLanguages(ctx context.Context, parentID string) error
 }
 
 type cachingProfileService struct {
@@ -258,6 +262,17 @@ func (s *cachingProfileService) SetBlockedChildCacheKey(ctx context.Context, chi
 }
 
 // ========================
+// === SET PARENT REPORT LANGUAGES ===
+// ========================
+func (s *cachingProfileService) SetParentReportLanguages(ctx context.Context, parentID string, data map[string]interface{}) error {
+	if parentID == "" || data == nil {
+		return nil
+	}
+	key := keys.ParentReportLanguagesCacheKey(parentID)
+	return s.setByKeyWithJSON(ctx, key, data)
+}
+
+// ========================
 // === INVALIDATE CACHE ===
 // ========================
 func (s *cachingProfileService) InvalidateUserCode(ctx context.Context, userID string) error {
@@ -404,4 +419,14 @@ func (s *cachingProfileService) InvalidateBlockedChildCacheKey(ctx context.Conte
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.BlockedChildCacheKey(childID))
+}
+
+// ========================
+// === INVALIDATE PARENT REPORT LANGUAGES ===
+// ========================
+func (s *cachingProfileService) InvalidateParentReportLanguages(ctx context.Context, parentID string) error {
+	if parentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ParentReportLanguagesCacheKey(parentID))
 }

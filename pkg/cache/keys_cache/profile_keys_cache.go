@@ -83,3 +83,7 @@ func BlockedParentCacheKey(parentID string) string {
 func BlockedChildCacheKey(childID string) string {
 	return string(helper.ProfileServicePrefix) + "blocked_child:" + childID
 }
+
+func ParentReportLanguagesCacheKey(parentID string) string {
+	return string(helper.ProfileServicePrefix) + "parent_report_languages:" + parentID
+}
