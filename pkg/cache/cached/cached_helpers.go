@@ -32,6 +32,28 @@ func getCache(
 	return result, nil
 }
 
+// getCache4ParentReportLanguages retrieves an array of maps from cache for parent report languages
+func getCache4ParentReportLanguages(
+	cache *cache.RedisCache,
+	ctx context.Context,
+	cacheKey string,
+) ([]map[string]interface{}, error) {
+	if cacheKey == "" {
+		return nil, nil
+	}
+
+	var result []map[string]interface{}
+	if err := cache.Get(ctx, cacheKey, &result); err != nil {
+		return nil, err
+	}
+
+	if len(result) == 0 {
+		return nil, nil
+	}
+
+	return result, nil
+}
+
 func getCacheString(
 	cache *cache.RedisCache,
 	ctx context.Context,

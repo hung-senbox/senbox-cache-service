@@ -34,7 +34,7 @@ type CachedProfileGateway interface {
 	GetBlockedChildCacheKey(ctx context.Context, childID string) (map[string]interface{}, error)
 
 	// Get parent report languages
-	GetParentReportLanguages(ctx context.Context, parentID string) (map[string]interface{}, error)
+	GetParentReportLanguages(ctx context.Context, parentID string) ([]map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -202,9 +202,9 @@ func (c *cachedProfileService) GetBlockedChildCacheKey(ctx context.Context, chil
 // ========================
 // === GET PARENT REPORT LANGUAGES ===
 // ========================
-func (c *cachedProfileService) GetParentReportLanguages(ctx context.Context, parentID string) (map[string]interface{}, error) {
+func (c *cachedProfileService) GetParentReportLanguages(ctx context.Context, parentID string) ([]map[string]interface{}, error) {
 	if parentID == "" {
 		return nil, nil
 	}
-	return getCache(c.cache, ctx, keys.ParentReportLanguagesCacheKey(parentID))
+	return getCache4ParentReportLanguages(c.cache, ctx, keys.ParentReportLanguagesCacheKey(parentID))
 }
