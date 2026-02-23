@@ -74,3 +74,24 @@ func getCacheString(
 
 	return result, nil
 }
+
+func getCacheFloat(
+	cache *cache.RedisCache,
+	ctx context.Context,
+	cacheKey string,
+) (float32, error) {
+	if cacheKey == "" {
+		return 0, nil
+	}
+
+	var result float32
+	if err := cache.Get(ctx, cacheKey, &result); err != nil {
+		return 0, err
+	}
+
+	if result == 0 {
+		return 0, nil
+	}
+
+	return result, nil
+}
