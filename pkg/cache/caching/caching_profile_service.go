@@ -31,7 +31,7 @@ type CachingProfileService interface {
 	SetBlockedParentCacheKey(ctx context.Context, parentID string, data interface{}) error
 	SetBlockedChildCacheKey(ctx context.Context, childID string, data interface{}) error
 	// parent report langues
-	SetParentReportLanguages(ctx context.Context, parentID string, data map[string]interface{}) error
+	SetParentReportLanguages(ctx context.Context, parentID string, data interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -264,7 +264,7 @@ func (s *cachingProfileService) SetBlockedChildCacheKey(ctx context.Context, chi
 // ========================
 // === SET PARENT REPORT LANGUAGES ===
 // ========================
-func (s *cachingProfileService) SetParentReportLanguages(ctx context.Context, parentID string, data map[string]interface{}) error {
+func (s *cachingProfileService) SetParentReportLanguages(ctx context.Context, parentID string, data interface{}) error {
 	if parentID == "" || data == nil {
 		return nil
 	}
