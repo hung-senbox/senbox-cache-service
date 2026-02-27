@@ -8,4 +8,5 @@ const (
 	CommonServicePrefix    CachePrefix = "common-service:"
 	LocationServicePrefix  CachePrefix = "location-service:"
 	ReportServicePrefix    CachePrefix = "report-service:"
+	QRServicePrefix        CachePrefix = "qr-service:"
 )
