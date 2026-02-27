@@ -71,3 +71,21 @@ func ParentImageCacheKey(parentID string) string {
 func ImageByKeyCacheKey(key string) string {
 	return string(helper.MainServicePrefixCache) + "image-by-key:" + key
 }
+
+// by code
+
+func StudentByCodeAndOrgCacheKey(code, orgID string) string {
+	return string(helper.MainServicePrefixCache) + "student-by-code-org:" + code + ":" + orgID
+}
+
+func TeacherByCodeAndOrgCacheKey(code, orgID string) string {
+	return string(helper.MainServicePrefixCache) + "teacher-by-code-org:" + code + ":" + orgID
+}
+
+func StaffByCodeAndOrgCacheKey(code, orgID string) string {
+	return string(helper.MainServicePrefixCache) + "staff-by-code-org:" + code + ":" + orgID
+}
+
+func ParentByCodeAndOrgCacheKey(code, orgID string) string {
+	return string(helper.MainServicePrefixCache) + "parent-by-code-org:" + code + ":" + orgID
+}

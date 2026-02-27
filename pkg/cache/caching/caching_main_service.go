@@ -31,6 +31,12 @@ type CachingMainService interface {
 	// ======================== Image by key Cache ========================
 	SetImageByKeyCacheKey(ctx context.Context, key string, data string) error
 
+	// ======================== By code and org Cache ========================
+	SetStudentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
+	SetTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
+	SetStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
+	SetParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
+
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
 	InvalidateParentCache(ctx context.Context, parentID string) error
@@ -53,6 +59,12 @@ type CachingMainService interface {
 
 	// ======================== Image by key Cache ========================
 	InvalidateImageByKeyCacheKey(ctx context.Context, key string) error
+
+	// ======================== By code and org Cache ========================
+	InvalidateStudentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
+	InvalidateTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
+	InvalidateStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
+	InvalidateParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
 }
 
 type cachingMainService struct {
@@ -202,6 +214,35 @@ func (s *cachingMainService) SetImageByKeyCacheKey(ctx context.Context, key stri
 	return s.setByKey(ctx, keys.ImageByKeyCacheKey(key), data)
 }
 
+// ======================== By code and org Cache ========================
+func (s *cachingMainService) SetStudentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error {
+	if code == "" || orgID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.StudentByCodeAndOrgCacheKey(code, orgID), data)
+}
+
+func (s *cachingMainService) SetTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error {
+	if code == "" || orgID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.TeacherByCodeAndOrgCacheKey(code, orgID), data)
+}
+
+func (s *cachingMainService) SetStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error {
+	if code == "" || orgID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.StaffByCodeAndOrgCacheKey(code, orgID), data)
+}
+
+func (s *cachingMainService) SetParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error {
+	if code == "" || orgID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID), data)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -324,4 +365,33 @@ func (s *cachingMainService) InvalidateImageByKeyCacheKey(ctx context.Context, k
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ImageByKeyCacheKey(key))
+}
+
+// ======================== By code and org Cache ========================
+func (s *cachingMainService) InvalidateStudentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error {
+	if code == "" || orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StudentByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (s *cachingMainService) InvalidateTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error {
+	if code == "" || orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.TeacherByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (s *cachingMainService) InvalidateStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error {
+	if code == "" || orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StaffByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (s *cachingMainService) InvalidateParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error {
+	if code == "" || orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID))
 }

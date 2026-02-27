@@ -29,6 +29,12 @@ type CachedMainGateway interface {
 
 	// ======================== Image by key Cache ========================
 	GetImageByKeyCache(ctx context.Context, key string) (string, error)
+
+	// ======================== By code and org Cache ========================
+	GetStudentByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
+	GetTeacherByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
+	GetStaffByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
+	GetParentByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
 }
 
 type cachedMainService struct {
@@ -164,4 +170,33 @@ func (c *cachedMainService) GetImageByKeyCache(ctx context.Context, key string) 
 		return "", nil
 	}
 	return getCacheString(c.cache, ctx, keys.ImageByKeyCacheKey(key))
+}
+
+// ======================== By code and org Cache ========================
+func (c *cachedMainService) GetStudentByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error) {
+	if code == "" || orgID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.StudentByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (c *cachedMainService) GetTeacherByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error) {
+	if code == "" || orgID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.TeacherByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (c *cachedMainService) GetStaffByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error) {
+	if code == "" || orgID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.StaffByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (c *cachedMainService) GetParentByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error) {
+	if code == "" || orgID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID))
 }
