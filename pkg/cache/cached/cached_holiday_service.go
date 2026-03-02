@@ -9,11 +9,9 @@ import (
 
 type CachedHolidayService interface {
 	GetStudentCheckInCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error)
-	GetTeacherCheckInCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error)
-	GetStaffCheckInCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error)
+	GetUserCheckInCacheKey(ctx context.Context, userID string) (map[string]interface{}, error)
 	GetStudentCheckOutCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error)
-	GetTeacherCheckOutCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error)
-	GetStaffCheckOutCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error)
+	GetUserCheckOutCacheKey(ctx context.Context, userID string) (map[string]interface{}, error)
 }
 
 type cachedHolidayService struct {
@@ -37,18 +35,11 @@ func (c *cachedHolidayService) GetStudentCheckInCacheKey(ctx context.Context, st
 	return getCache(c.cache, ctx, keys.StudentCheckInCacheKey(studentID))
 }
 
-func (c *cachedHolidayService) GetTeacherCheckInCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error) {
-	if teacherID == "" {
+func (c *cachedHolidayService) GetUserCheckInCacheKey(ctx context.Context, userID string) (map[string]interface{}, error) {
+	if userID == "" {
 		return nil, nil
 	}
-	return getCache(c.cache, ctx, keys.TeacherCheckInCacheKey(teacherID))
-}
-
-func (c *cachedHolidayService) GetStaffCheckInCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error) {
-	if staffID == "" {
-		return nil, nil
-	}
-	return getCache(c.cache, ctx, keys.StaffCheckInCacheKey(staffID))
+	return getCache(c.cache, ctx, keys.UserCheckInCacheKey(userID))
 }
 
 func (c *cachedHolidayService) GetStudentCheckOutCacheKey(ctx context.Context, studentID string) (map[string]interface{}, error) {
@@ -58,16 +49,9 @@ func (c *cachedHolidayService) GetStudentCheckOutCacheKey(ctx context.Context, s
 	return getCache(c.cache, ctx, keys.StudentCheckOutCacheKey(studentID))
 }
 
-func (c *cachedHolidayService) GetTeacherCheckOutCacheKey(ctx context.Context, teacherID string) (map[string]interface{}, error) {
-	if teacherID == "" {
+func (c *cachedHolidayService) GetUserCheckOutCacheKey(ctx context.Context, userID string) (map[string]interface{}, error) {
+	if userID == "" {
 		return nil, nil
 	}
-	return getCache(c.cache, ctx, keys.TeacherCheckOutCacheKey(teacherID))
-}
-
-func (c *cachedHolidayService) GetStaffCheckOutCacheKey(ctx context.Context, staffID string) (map[string]interface{}, error) {
-	if staffID == "" {
-		return nil, nil
-	}
-	return getCache(c.cache, ctx, keys.StaffCheckOutCacheKey(staffID))
+	return getCache(c.cache, ctx, keys.UserCheckOutCacheKey(userID))
 }
