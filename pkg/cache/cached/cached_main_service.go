@@ -35,6 +35,7 @@ type CachedMainGateway interface {
 	GetTeacherByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
 	GetStaffByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
 	GetParentByCodeAndOrgCache(ctx context.Context, code, orgID string) (map[string]interface{}, error)
+	GetDeviceNickNameAndOrgByCodeCache(ctx context.Context, code, orgID string) (string, error)
 }
 
 type cachedMainService struct {
@@ -199,4 +200,11 @@ func (c *cachedMainService) GetParentByCodeAndOrgCache(ctx context.Context, code
 		return nil, nil
 	}
 	return getCache(c.cache, ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (c *cachedMainService) GetDeviceNickNameAndOrgByCodeCache(ctx context.Context, code, orgID string) (string, error) {
+	if code == "" || orgID == "" {
+		return "", nil
+	}
+	return getCacheString(c.cache, ctx, keys.DeviceNickNameAndOrgByCodeCacheKey(code, orgID))
 }

@@ -10,4 +10,5 @@ const (
 	ReportServicePrefix    CachePrefix = "report-service:"
 	QRServicePrefix        CachePrefix = "qr-service:"
 	InventoryServicePrefix CachePrefix = "inventory-service:"
+	HolidayServicePrefix   CachePrefix = "holiday-service:"
 )

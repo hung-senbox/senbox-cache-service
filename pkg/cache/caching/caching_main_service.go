@@ -36,6 +36,7 @@ type CachingMainService interface {
 	SetTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
 	SetStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
 	SetParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
+	SetDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string, nickname string) error
 
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
@@ -65,6 +66,7 @@ type CachingMainService interface {
 	InvalidateTeacherByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
 	InvalidateStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
 	InvalidateParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
+	InvalidateDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string) error
 }
 
 type cachingMainService struct {
@@ -243,6 +245,13 @@ func (s *cachingMainService) SetParentByCodeAndOrgCacheKey(ctx context.Context, 
 	return s.setByKey(ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID), data)
 }
 
+func (s *cachingMainService) SetDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string, nickname string) error {
+	if code == "" || orgID == "" || nickname == "" {
+		return nil
+	}
+	return s.setByKey(ctx, keys.DeviceNickNameAndOrgByCodeCacheKey(code, orgID), nickname)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -394,4 +403,11 @@ func (s *cachingMainService) InvalidateParentByCodeAndOrgCacheKey(ctx context.Co
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ParentByCodeAndOrgCacheKey(code, orgID))
+}
+
+func (s *cachingMainService) InvalidateDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string) error {
+	if code == "" || orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.DeviceNickNameAndOrgByCodeCacheKey(code, orgID))
 }
