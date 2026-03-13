@@ -36,9 +36,9 @@ func (s *cachingHolidayService) setByKey(ctx context.Context, key string, data i
 		return nil
 	}
 
-	ttl := s.ttlUntilEndOfDaySeconds()
+	ttl := s.ttlUntil2350ICTSeconds()
 	if ttl <= 0 {
-		ttl = s.defaultTTL
+		ttl = 1 // ensure the key always expires
 	}
 
 	return s.cache.Set(ctx, key, data, ttl)
@@ -48,11 +48,18 @@ func (s *cachingHolidayService) deleteByKey(ctx context.Context, key string) err
 	return s.cache.Delete(ctx, key)
 }
 
-// ttlUntilEndOfDaySeconds returns the remaining seconds to midnight in local time
-func (s *cachingHolidayService) ttlUntilEndOfDaySeconds() int {
-	now := time.Now()
-	endOfDay := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
-	return int(endOfDay.Sub(now).Seconds())
+// ttlUntil2350ICTSeconds returns seconds until 23:50 ICT (UTC+7).
+// If current time is past 23:50, it targets 23:50 of the next day.
+func (s *cachingHolidayService) ttlUntil2350ICTSeconds() int {
+	ict := time.FixedZone("ICT", 7*60*60)
+	now := time.Now().In(ict)
+
+	target := time.Date(now.Year(), now.Month(), now.Day(), 23, 50, 0, 0, ict)
+	if !now.Before(target) {
+		target = target.Add(24 * time.Hour)
+	}
+
+	return int(target.Sub(now).Seconds())
 }
 
 // ========================
