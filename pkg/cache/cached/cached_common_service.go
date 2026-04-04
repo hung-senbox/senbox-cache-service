@@ -8,7 +8,11 @@ import (
 )
 
 type CachedCommonGateway interface {
+	// ======================== Language Cache ========================
 	GetLanguageById(ctx context.Context, languageID uint) (map[string]interface{}, error)
+
+	// ======================== Occupation Cache ========================
+	GetOccupationByIdAndLanguageId(ctx context.Context, occupationID string, languageID uint) (map[string]interface{}, error)
 }
 
 type cachedCommonService struct {
@@ -30,4 +34,11 @@ func (c *cachedCommonService) GetLanguageById(ctx context.Context, languageID ui
 		return nil, nil
 	}
 	return getCache(c.cache, ctx, keys.GetLanguageByIdCacheKey(languageID))
+}
+
+func (c *cachedCommonService) GetOccupationByIdAndLanguageId(ctx context.Context, occupationID string, languageID uint) (map[string]interface{}, error) {
+	if occupationID == "" || languageID == 0 {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.GetOccupationByIdAndLanguageIdCacheKey(occupationID, languageID))
 }
