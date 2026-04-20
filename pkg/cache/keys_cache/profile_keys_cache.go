@@ -87,3 +87,16 @@ func BlockedChildCacheKey(childID string) string {
 func ParentReportLanguagesCacheKey(parentID string) string {
 	return string(helper.ProfileServicePrefix) + "parent_report_languages:" + parentID
 }
+
+// ======================== User Service Permission Cache Key ========================
+func UserServicePermissionCacheKey(userID string) string {
+	return string(helper.ProfileServicePrefix) + "user_service_permission:" + userID
+}
+
+func AllServicesCacheKey() string {
+	return string(helper.ProfileServicePrefix) + "all_services"
+}
+
+func AllPermissionsCacheKey() string {
+	return string(helper.ProfileServicePrefix) + "all_permissions"
+}

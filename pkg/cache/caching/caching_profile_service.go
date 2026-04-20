@@ -32,6 +32,10 @@ type CachingProfileService interface {
 	SetBlockedChildCacheKey(ctx context.Context, childID string, data interface{}) error
 	// parent report langues
 	SetParentReportLanguages(ctx context.Context, parentID string, data interface{}) error
+	// User Service Permission Cache Key
+	SetUserServicePermission(ctx context.Context, userID string, data interface{}) error
+	SetAllServices(ctx context.Context, data interface{}) error
+	SetAllPermissions(ctx context.Context, data interface{}) error
 
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
@@ -57,6 +61,10 @@ type CachingProfileService interface {
 	InvalidateBlockedChildCacheKey(ctx context.Context, childID string) error
 	// parent report languages
 	InvalidateParentReportLanguages(ctx context.Context, parentID string) error
+	// User Service Permission Cache Key
+	InvalidateUserServicePermission(ctx context.Context, userID string) error
+	InvalidateAllServices(ctx context.Context) error
+	InvalidateAllPermissions(ctx context.Context) error
 }
 
 type cachingProfileService struct {
@@ -273,6 +281,33 @@ func (s *cachingProfileService) SetParentReportLanguages(ctx context.Context, pa
 }
 
 // ========================
+// === SET USER SERVICE PERMISSION CACHE KEY ===
+// ========================
+func (s *cachingProfileService) SetUserServicePermission(ctx context.Context, userID string, data interface{}) error {
+	if userID == "" || data == nil {
+		return nil
+	}
+	key := keys.UserServicePermissionCacheKey(userID)
+	return s.setByKeyWithJSON(ctx, key, data)
+}
+
+func (s *cachingProfileService) SetAllServices(ctx context.Context, data interface{}) error {
+	if data == nil {
+		return nil
+	}
+	key := keys.AllServicesCacheKey()
+	return s.setByKeyWithJSON(ctx, key, data)
+}
+
+func (s *cachingProfileService) SetAllPermissions(ctx context.Context, data interface{}) error {
+	if data == nil {
+		return nil
+	}
+	key := keys.AllPermissionsCacheKey()
+	return s.setByKeyWithJSON(ctx, key, data)
+}
+
+// ========================
 // === INVALIDATE CACHE ===
 // ========================
 func (s *cachingProfileService) InvalidateUserCode(ctx context.Context, userID string) error {
@@ -429,4 +464,22 @@ func (s *cachingProfileService) InvalidateParentReportLanguages(ctx context.Cont
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.ParentReportLanguagesCacheKey(parentID))
+}
+
+// ========================
+// === INVALIDATE USER SERVICE PERMISSION CACHE KEY ===
+// ========================
+func (s *cachingProfileService) InvalidateUserServicePermission(ctx context.Context, userID string) error {
+	if userID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.UserServicePermissionCacheKey(userID))
+}
+
+func (s *cachingProfileService) InvalidateAllServices(ctx context.Context) error {
+	return s.deleteByKey(ctx, keys.AllServicesCacheKey())
+}
+
+func (s *cachingProfileService) InvalidateAllPermissions(ctx context.Context) error {
+	return s.deleteByKey(ctx, keys.AllPermissionsCacheKey())
 }
