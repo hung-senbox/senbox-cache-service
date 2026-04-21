@@ -37,9 +37,9 @@ type CachedProfileGateway interface {
 	GetParentReportLanguages(ctx context.Context, parentID string) ([]map[string]interface{}, error)
 
 	// Get user service permission
-	GetUserServicePermission(ctx context.Context, userID string) (map[string]interface{}, error)
-	GetAllServices(ctx context.Context) (map[string]interface{}, error)
-	GetAllPermissions(ctx context.Context) (map[string]interface{}, error)
+	GetUserServicePermission(ctx context.Context, userID string) ([]map[string]interface{}, error)
+	GetAllServices(ctx context.Context) ([]map[string]interface{}, error)
+	GetAllPermissions(ctx context.Context) ([]map[string]interface{}, error)
 }
 
 type cachedProfileService struct {
@@ -217,17 +217,17 @@ func (c *cachedProfileService) GetParentReportLanguages(ctx context.Context, par
 // ========================
 // === GET USER SERVICE PERMISSION ===
 // ========================
-func (c *cachedProfileService) GetUserServicePermission(ctx context.Context, userID string) (map[string]interface{}, error) {
+func (c *cachedProfileService) GetUserServicePermission(ctx context.Context, userID string) ([]map[string]interface{}, error) {
 	if userID == "" {
 		return nil, nil
 	}
-	return getCache(c.cache, ctx, keys.UserServicePermissionCacheKey(userID))
+	return getCacheArray(c.cache, ctx, keys.UserServicePermissionCacheKey(userID))
 }
 
-func (c *cachedProfileService) GetAllServices(ctx context.Context) (map[string]interface{}, error) {
-	return getCache(c.cache, ctx, keys.AllServicesCacheKey())
+func (c *cachedProfileService) GetAllServices(ctx context.Context) ([]map[string]interface{}, error) {
+	return getCacheArray(c.cache, ctx, keys.AllServicesCacheKey())
 }
 
-func (c *cachedProfileService) GetAllPermissions(ctx context.Context) (map[string]interface{}, error) {
-	return getCache(c.cache, ctx, keys.AllPermissionsCacheKey())
+func (c *cachedProfileService) GetAllPermissions(ctx context.Context) ([]map[string]interface{}, error) {
+	return getCacheArray(c.cache, ctx, keys.AllPermissionsCacheKey())
 }
