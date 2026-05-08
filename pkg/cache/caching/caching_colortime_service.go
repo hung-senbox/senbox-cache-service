@@ -9,6 +9,7 @@ import (
 
 type CachingColortimeService interface {
 	SetColorTimeSessionID(ctx context.Context, colorTimeSessionID string, data interface{}) error
+	InvalidateColorTimeSessionID(ctx context.Context, colorTimeSessionID string) error
 }
 
 type cachingColortimeService struct {
