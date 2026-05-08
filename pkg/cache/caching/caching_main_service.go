@@ -38,6 +38,9 @@ type CachingMainService interface {
 	SetParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string, data interface{}) error
 	SetDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string, nickname string) error
 
+	// ======================== All student by org id Cache ========================
+	SetAllStudentIDsByOrgIDCacheKey(ctx context.Context, orgID string, data []string) error
+
 	InvalidateUserCache(ctx context.Context, userID string) error
 	InvalidateTeacherCache(ctx context.Context, teacherID string) error
 	InvalidateParentCache(ctx context.Context, parentID string) error
@@ -67,6 +70,9 @@ type CachingMainService interface {
 	InvalidateStaffByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
 	InvalidateParentByCodeAndOrgCacheKey(ctx context.Context, code, orgID string) error
 	InvalidateDeviceNickNameAndOrgByCodeCacheKey(ctx context.Context, code, orgID string) error
+
+	// ======================== All student by org id Cache ========================
+	InvalidateAllStudentIDsByOrgIDCacheKey(ctx context.Context, orgID string) error
 }
 
 type cachingMainService struct {
@@ -252,6 +258,13 @@ func (s *cachingMainService) SetDeviceNickNameAndOrgByCodeCacheKey(ctx context.C
 	return s.setByKey(ctx, keys.DeviceNickNameAndOrgByCodeCacheKey(code, orgID), nickname)
 }
 
+func (s *cachingMainService) SetAllStudentIDsByOrgIDCacheKey(ctx context.Context, orgID string, data []string) error {
+	if orgID == "" {
+		return nil
+	}
+	return s.setByKey(ctx, keys.AllStudentIDsByOrgIDCacheKey(orgID), data)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -410,4 +423,12 @@ func (s *cachingMainService) InvalidateDeviceNickNameAndOrgByCodeCacheKey(ctx co
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.DeviceNickNameAndOrgByCodeCacheKey(code, orgID))
+}
+
+// ======================== All student by org id Cache ========================
+func (s *cachingMainService) InvalidateAllStudentIDsByOrgIDCacheKey(ctx context.Context, orgID string) error {
+	if orgID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.AllStudentIDsByOrgIDCacheKey(orgID))
 }

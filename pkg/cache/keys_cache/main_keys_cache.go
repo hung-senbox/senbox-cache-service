@@ -93,3 +93,8 @@ func ParentByCodeAndOrgCacheKey(code, orgID string) string {
 func DeviceNickNameAndOrgByCodeCacheKey(code, orgID string) string {
 	return string(helper.MainServicePrefixCache) + "device-nickname-org-by-code:" + code + ":" + orgID
 }
+
+// all student by org id
+func AllStudentIDsByOrgIDCacheKey(orgID string) string {
+	return string(helper.MainServicePrefixCache) + "all-student-by-org-id:" + orgID
+}
