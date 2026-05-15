@@ -10,8 +10,10 @@ import (
 type CachingTermService interface {
 	// Set term cache
 	SetTermCache(ctx context.Context, termID string, data interface{}) error
+	SetCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string, data interface{}) error
 	// Invalidate term cache
 	InvalidateTermCache(ctx context.Context, termID string) error
+	InvalidateCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string) error
 }
 
 type cachingTermService struct {
@@ -45,6 +47,13 @@ func (s *cachingTermService) SetTermCache(ctx context.Context, termID string, da
 	return s.setByKey(ctx, keys.GetTermCacheKey(termID), data)
 }
 
+func (s *cachingTermService) SetCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string, data interface{}) error {
+	if organizationID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.GetCurrentTermByOrganizationIDCacheKey(organizationID), data)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -54,4 +63,11 @@ func (s *cachingTermService) InvalidateTermCache(ctx context.Context, termID str
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.GetTermCacheKey(termID))
+}
+
+func (s *cachingTermService) InvalidateCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string) error {
+	if organizationID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.GetCurrentTermByOrganizationIDCacheKey(organizationID))
 }

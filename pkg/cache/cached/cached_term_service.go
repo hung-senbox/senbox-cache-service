@@ -9,6 +9,7 @@ import (
 
 type CachedTermService interface {
 	GetTermCache(ctx context.Context, termID string) (interface{}, error)
+	GetCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string) (interface{}, error)
 }
 
 type cachedTermService struct {
@@ -28,4 +29,11 @@ func (c *cachedTermService) GetTermCache(ctx context.Context, termID string) (in
 		return nil, nil
 	}
 	return getCache(c.cache, ctx, keys.GetTermCacheKey(termID))
+}
+
+func (c *cachedTermService) GetCurrentTermByOrganizationIDCache(ctx context.Context, organizationID string) (interface{}, error) {
+	if organizationID == "" {
+		return nil, nil
+	}
+	return getCache(c.cache, ctx, keys.GetCurrentTermByOrganizationIDCacheKey(organizationID))
 }
