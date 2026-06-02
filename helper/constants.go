@@ -13,4 +13,5 @@ const (
 	InventoryServicePrefix CachePrefix = "inventory-service:"
 	HolidayServicePrefix   CachePrefix = "holiday-service:"
 	TermServicePrefix      CachePrefix = "term-service:"
+	S3ServicePrefix        CachePrefix = "s3-service:"
 )
