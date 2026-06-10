@@ -14,4 +14,12 @@ const (
 	HolidayServicePrefix   CachePrefix = "holiday-service:"
 	TermServicePrefix      CachePrefix = "term-service:"
 	S3ServicePrefix        CachePrefix = "s3-service:"
+	CountServicePrefix     CachePrefix = "count-service:"
+	MediaPrefix            CachePrefix = "media:"
+)
+
+type MediaCountSubType string
+
+const (
+	MediaCountSubTypePortalByStudentID MediaCountSubType = "portal_by_student_id"
 )

@@ -115,3 +115,28 @@ func getCacheFloat(
 
 	return result, nil
 }
+
+// set cache
+func SetCache(
+	cache *cache.RedisCache,
+	ctx context.Context,
+	cacheKey string,
+	data interface{},
+) error {
+	if cacheKey == "" || data == nil {
+		return nil
+	}
+	return cache.Set(ctx, cacheKey, data, 0)
+}
+
+// delete cache
+func DeleteCache(
+	cache *cache.RedisCache,
+	ctx context.Context,
+	cacheKey string,
+) error {
+	if cacheKey == "" {
+		return nil
+	}
+	return cache.Delete(ctx, cacheKey)
+}
