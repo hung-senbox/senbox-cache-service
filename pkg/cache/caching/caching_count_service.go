@@ -6,10 +6,11 @@ import (
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache/cached"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/media"
 )
 
 type CachingCountService interface {
-	SetMediaPortalCountByStudentID(ctx context.Context, studentID string, data interface{}) error
+	SetMediaPortalCountByStudentID(ctx context.Context, studentID string, studentPortalCounts []media.CountMediaStudentPortal) error // array interface
 	InvalidateMediaPortalCountByStudentID(ctx context.Context, studentID string) error
 }
 
@@ -26,11 +27,11 @@ func NewCachingCountService(cache *cache.RedisCache, defaultTTL int) CachingCoun
 // === SET CACHE ===
 // ========================
 
-func (s *cachingCountService) SetMediaPortalCountByStudentID(ctx context.Context, studentID string, data interface{}) error {
-	if studentID == "" || data == nil {
+func (s *cachingCountService) SetMediaPortalCountByStudentID(ctx context.Context, studentID string, studentPortalCounts []media.CountMediaStudentPortal) error {
+	if studentID == "" || studentPortalCounts == nil {
 		return nil
 	}
-	return cached.SetCache(s.cache, ctx, keys.GetCountCacheKey(studentID), data)
+	return cached.SetCache(s.cache, ctx, keys.GetCountCacheKey(studentID), studentPortalCounts)
 }
 
 func (s *cachingCountService) InvalidateMediaPortalCountByStudentID(ctx context.Context, studentID string) error {
