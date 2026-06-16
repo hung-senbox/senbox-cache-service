@@ -13,6 +13,8 @@ import (
 type CachedCountService interface {
 	GetMediaPortalCountByStudentID(ctx context.Context, studentID string) ([]media.CountMediaStudentPortal, error)
 	GetMediaPortalCountByStudentIds(ctx context.Context, studentIDs []string) (map[string][]media.CountMediaStudentPortal, error)
+	GetMediaPortalCountByStudentIdsCurrentDay(ctx context.Context, studentIDs []string) (map[string][]media.CountMediaStudentPortal, error)
+	GetMediaPortalCountByStudentIdsRangeData(ctx context.Context, studentIDs []string, startDate, endDate string) (map[string][]media.CountMediaStudentPortal, error)
 }
 
 type cachedCountService struct {
