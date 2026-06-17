@@ -41,22 +41,40 @@ func (s *cachingCountService) SetDefaultCurrentDayMediaPortalCountByStudentIds(c
 		return nil
 	}
 
-	// TotalPlaceholder = 5 cho tung hoc sinh
+	currentDate := helper.GetCurrentDateStringWithTimezone()
+
+	// TotalPlaceholder = 5 cho tung hoc sinh (chi append ngay hien tai neu chua co)
 	for _, studentID := range studentIDs {
 		if studentID == "" {
 			continue
 		}
 
-		studentPortalCounts := []media.CountMediaStudentPortal{
-			{
-				Date:             helper.GetCurrentDateStringWithTimezone(),
-				TotalPlaceholder: 5,
-				TotalResource:    0,
-				TotalOutput:      0,
-			},
+		cacheKey := keys.GetCountCacheKey(studentID)
+
+		var studentPortalCounts []media.CountMediaStudentPortal
+		if err := s.cache.Get(ctx, cacheKey, &studentPortalCounts); err != nil {
+			return err
 		}
 
-		if err := s.SetMediaPortalCountByStudentID(ctx, studentID, studentPortalCounts); err != nil {
+		isCurrentDayExists := false
+		for _, studentPortalCount := range studentPortalCounts {
+			if studentPortalCount.Date == currentDate {
+				isCurrentDayExists = true
+				break
+			}
+		}
+		if isCurrentDayExists {
+			continue
+		}
+
+		studentPortalCounts = append(studentPortalCounts, media.CountMediaStudentPortal{
+			Date:             currentDate,
+			TotalPlaceholder: 5,
+			TotalResource:    0,
+			TotalOutput:      0,
+		})
+
+		if err := cached.SetCache(s.cache, ctx, cacheKey, studentPortalCounts); err != nil {
 			return err
 		}
 	}
