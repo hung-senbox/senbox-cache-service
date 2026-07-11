@@ -10,6 +10,9 @@ import (
 type CachingQRService interface {
 	SetQRCode(ctx context.Context, qrCodeID string, data interface{}) error
 	InvalidateQRCode(ctx context.Context, qrCodeID string) error
+
+	SetLibMode(ctx context.Context, libModeID string, data interface{}) error
+	InvalidateLibMode(ctx context.Context, libModeID string) error
 }
 
 type cachingQRService struct {
@@ -55,4 +58,26 @@ func (s *cachingQRService) InvalidateQRCode(ctx context.Context, qrCodeID string
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.GetQRCodeCacheKey(qrCodeID))
+}
+
+// ========================
+// === SET LIB MODE CACHE ===
+// ========================
+
+func (s *cachingQRService) SetLibMode(ctx context.Context, libModeID string, data interface{}) error {
+	if libModeID == "" || data == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.GetLibModeCacheKey(libModeID), data)
+}
+
+// ========================
+// === INVALIDATE LIB MODE CACHE ===
+// ========================
+
+func (s *cachingQRService) InvalidateLibMode(ctx context.Context, libModeID string) error {
+	if libModeID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.GetLibModeCacheKey(libModeID))
 }
