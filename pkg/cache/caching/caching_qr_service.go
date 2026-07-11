@@ -4,14 +4,16 @@ import (
 	"context"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/cache/cached"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/qr"
 )
 
 type CachingQRService interface {
 	SetQRCode(ctx context.Context, qrCodeID string, data interface{}) error
 	InvalidateQRCode(ctx context.Context, qrCodeID string) error
 
-	SetLibMode(ctx context.Context, libModeID string, data interface{}) error
+	SetLibMode(ctx context.Context, libModeID string, libMode qr.LibMode) error
 	InvalidateLibMode(ctx context.Context, libModeID string) error
 }
 
@@ -64,11 +66,12 @@ func (s *cachingQRService) InvalidateQRCode(ctx context.Context, qrCodeID string
 // === SET LIB MODE CACHE ===
 // ========================
 
-func (s *cachingQRService) SetLibMode(ctx context.Context, libModeID string, data interface{}) error {
-	if libModeID == "" || data == nil {
+func (s *cachingQRService) SetLibMode(ctx context.Context, libModeID string, libMode qr.LibMode) error {
+	if libModeID == "" {
 		return nil
 	}
-	return s.setByKey(ctx, keys.GetLibModeCacheKey(libModeID), data)
+
+	return cached.SetCache(s.cache, ctx, keys.GetLibModeCacheKey(libModeID), libMode)
 }
 
 // ========================
@@ -79,5 +82,6 @@ func (s *cachingQRService) InvalidateLibMode(ctx context.Context, libModeID stri
 	if libModeID == "" {
 		return nil
 	}
-	return s.deleteByKey(ctx, keys.GetLibModeCacheKey(libModeID))
+
+	return cached.DeleteCache(s.cache, ctx, keys.GetLibModeCacheKey(libModeID))
 }

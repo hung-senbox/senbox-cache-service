@@ -20,33 +20,7 @@ type LibMode struct {
 }
 
 type LibModeScanStatus struct {
-	SbtStatus             LibModeSbtStatus             `bson:"sbt_status" json:"sbt_status"`
-	SbtItemStatus         LibModeSbtItemStatus         `bson:"sbt_item_status" json:"sbt_item_status"`
-	ScanLocationBoxStatus LibModeScanLocationBoxStatus `bson:"scan_location_box_status" json:"scan_location_box_status"`
+	SbtStatus             string `bson:"sbt_status" json:"sbt_status"`
+	SbtItemStatus         string `bson:"sbt_item_status" json:"sbt_item_status"`
+	ScanLocationBoxStatus string `bson:"scan_location_box_status" json:"scan_location_box_status"`
 }
-
-type LibModeSbtStatus string
-
-const (
-	LibModeSbtStatusUnknown   LibModeSbtStatus = "unknown"
-	LibModeSbtStatusAvailable LibModeSbtStatus = "available"
-	LibModeSbtStatusPacked    LibModeSbtStatus = "packed"
-	LibModeSbtStatusInUse     LibModeSbtStatus = "in_use"
-)
-
-type LibModeSbtItemStatus string
-
-const (
-	LibModeSbtItemStatusOrdered LibModeSbtItemStatus = "ordered"
-	LibModeSbtItemStatusNew     LibModeSbtItemStatus = "new"
-	LibModeSbtItemStatusUsed    LibModeSbtItemStatus = "used"
-	LibModeSbtItemStatusBroken  LibModeSbtItemStatus = "broken"
-)
-
-type LibModeScanLocationBoxStatus string
-
-const (
-	LibModeScanLocationBoxStatusUnknown LibModeScanLocationBoxStatus = "unknown"
-	LibModeScanLocationBoxStatusFound   LibModeScanLocationBoxStatus = "found"
-	LibModeScanLocationBoxStatusMissing LibModeScanLocationBoxStatus = "missing"
-)
