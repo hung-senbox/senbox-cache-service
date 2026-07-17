@@ -34,6 +34,7 @@ type CachingProfileService interface {
 	SetParentReportLanguages(ctx context.Context, parentID string, data interface{}) error
 	// User Service Permission Cache Key
 	SetUserServicePermission(ctx context.Context, userID string, data interface{}) error
+	SetOrganizationServicePermission(ctx context.Context, organizationID string, data interface{}) error
 	SetAllServices(ctx context.Context, data interface{}) error
 	SetAllPermissions(ctx context.Context, data interface{}) error
 
@@ -291,6 +292,14 @@ func (s *cachingProfileService) SetUserServicePermission(ctx context.Context, us
 	return s.setByKeyWithJSON(ctx, key, data)
 }
 
+func (s *cachingProfileService) SetOrganizationServicePermission(ctx context.Context, organizationID string, data interface{}) error {
+	if organizationID == "" || data == nil {
+		return nil
+	}
+	key := keys.OrganizationServicePermissionCacheKey(organizationID)
+	return s.setByKeyWithJSON(ctx, key, data)
+}
+
 func (s *cachingProfileService) SetAllServices(ctx context.Context, data interface{}) error {
 	if data == nil {
 		return nil
@@ -474,6 +483,13 @@ func (s *cachingProfileService) InvalidateUserServicePermission(ctx context.Cont
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.UserServicePermissionCacheKey(userID))
+}
+
+func (s *cachingProfileService) InvalidateOrganizationServicePermission(ctx context.Context, organizationID string) error {
+	if organizationID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.OrganizationServicePermissionCacheKey(organizationID))
 }
 
 func (s *cachingProfileService) InvalidateAllServices(ctx context.Context) error {

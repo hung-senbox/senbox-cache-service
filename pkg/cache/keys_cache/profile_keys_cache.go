@@ -93,6 +93,10 @@ func UserServicePermissionCacheKey(userID string) string {
 	return string(helper.ProfileServicePrefix) + "user_service_permission:" + userID
 }
 
+func OrganizationServicePermissionCacheKey(organizationID string) string {
+	return string(helper.ProfileServicePrefix) + "organization_service_permission:" + organizationID
+}
+
 func AllServicesCacheKey() string {
 	return string(helper.ProfileServicePrefix) + "all_services"
 }

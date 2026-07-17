@@ -38,6 +38,7 @@ type CachedProfileGateway interface {
 
 	// Get user service permission
 	GetUserServicePermission(ctx context.Context, userID string) ([]map[string]interface{}, error)
+	GetOrganizationServicePermission(ctx context.Context, organizationID string) ([]map[string]interface{}, error)
 	GetAllServices(ctx context.Context) ([]map[string]interface{}, error)
 	GetAllPermissions(ctx context.Context) ([]map[string]interface{}, error)
 }
@@ -222,6 +223,13 @@ func (c *cachedProfileService) GetUserServicePermission(ctx context.Context, use
 		return nil, nil
 	}
 	return getCacheArray(c.cache, ctx, keys.UserServicePermissionCacheKey(userID))
+}
+
+func (c *cachedProfileService) GetOrganizationServicePermission(ctx context.Context, organizationID string) ([]map[string]interface{}, error) {
+	if organizationID == "" {
+		return nil, nil
+	}
+	return getCacheArray(c.cache, ctx, keys.OrganizationServicePermissionCacheKey(organizationID))
 }
 
 func (c *cachedProfileService) GetAllServices(ctx context.Context) ([]map[string]interface{}, error) {
