@@ -5,6 +5,7 @@ import (
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/profile"
 )
 
 type CachingProfileService interface {
@@ -38,6 +39,9 @@ type CachingProfileService interface {
 	SetAllServices(ctx context.Context, data interface{}) error
 	SetAllPermissions(ctx context.Context, data interface{}) error
 
+	// Student Information
+	SetStudentInformation(ctx context.Context, studentID string, studentInformation *profile.StudentInformation) error
+
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
 	InvalidateTeacherCode(ctx context.Context, teacherID string) error
@@ -66,6 +70,9 @@ type CachingProfileService interface {
 	InvalidateUserServicePermission(ctx context.Context, userID string) error
 	InvalidateAllServices(ctx context.Context) error
 	InvalidateAllPermissions(ctx context.Context) error
+
+	// Student Information
+	InvalidateStudentInformation(ctx context.Context, studentID string) error
 }
 
 type cachingProfileService struct {
@@ -316,6 +323,14 @@ func (s *cachingProfileService) SetAllPermissions(ctx context.Context, data inte
 	return s.setByKeyWithJSON(ctx, key, data)
 }
 
+func (s *cachingProfileService) SetStudentInformation(ctx context.Context, studentID string, studentInformation *profile.StudentInformation) error {
+	if studentID == "" || studentInformation == nil {
+		return nil
+	}
+	key := keys.StudentInformationCacheKey(studentID)
+	return s.setByKeyWithJSON(ctx, key, studentInformation)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -498,4 +513,11 @@ func (s *cachingProfileService) InvalidateAllServices(ctx context.Context) error
 
 func (s *cachingProfileService) InvalidateAllPermissions(ctx context.Context) error {
 	return s.deleteByKey(ctx, keys.AllPermissionsCacheKey())
+}
+
+func (s *cachingProfileService) InvalidateStudentInformation(ctx context.Context, studentID string) error {
+	if studentID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.StudentInformationCacheKey(studentID))
 }
