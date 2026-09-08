@@ -2,9 +2,11 @@ package cached
 
 import (
 	"context"
+	"sort"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/profile"
 )
 
 type CachedProfileGateway interface {
@@ -41,6 +43,9 @@ type CachedProfileGateway interface {
 	GetOrganizationServicePermission(ctx context.Context, organizationID string) ([]map[string]interface{}, error)
 	GetAllServices(ctx context.Context) ([]map[string]interface{}, error)
 	GetAllPermissions(ctx context.Context) ([]map[string]interface{}, error)
+
+	// Get student information
+	GetStudentInformationsByOrgId(ctx context.Context, orgID string) ([]profile.StudentInformation, error)
 }
 
 type cachedProfileService struct {
@@ -51,6 +56,82 @@ func NewCachedProfileGateway(cache *cache.RedisCache) CachedProfileGateway {
 	return &cachedProfileService{
 		cache: cache,
 	}
+}
+
+// GetStudentInformationsByOrgId returns cached students for an organization,
+// ordered by cache key. Concurrent cache changes are not an atomic snapshot.
+func (c *cachedProfileService) GetStudentInformationsByOrgId(ctx context.Context, orgID string) ([]profile.StudentInformation, error) {
+	if orgID == "" {
+		return nil, nil
+	}
+
+	matches, err := c.scanStudentInformationsByOrgId(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	return studentInformationsSortedByCacheKey(matches), nil
+}
+
+func (c *cachedProfileService) scanStudentInformationsByOrgId(ctx context.Context, orgID string) (map[string]profile.StudentInformation, error) {
+	seen := make(map[string]struct{})
+	matches := make(map[string]profile.StudentInformation)
+	var cursor uint64
+	for {
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		page, next, err := c.cache.Scan(ctx, cursor, keys.StudentInformationCacheKey("*"), 100)
+		if err != nil {
+			return nil, err
+		}
+		if err := c.collectStudentInformationsFromPage(ctx, orgID, page, seen, matches); err != nil {
+			return nil, err
+		}
+		cursor = next
+		if cursor == 0 {
+			break
+		}
+	}
+	return matches, nil
+}
+
+func (c *cachedProfileService) collectStudentInformationsFromPage(
+	ctx context.Context,
+	orgID string,
+	page []string,
+	seen map[string]struct{},
+	matches map[string]profile.StudentInformation,
+) error {
+	for _, key := range page {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		if _, ok := seen[key]; ok {
+			continue
+		}
+		seen[key] = struct{}{}
+		var student *profile.StudentInformation
+		if err := c.cache.Get(ctx, key, &student); err != nil {
+			return err
+		}
+		if student != nil && student.OrganizationId == orgID {
+			matches[key] = *student
+		}
+	}
+	return nil
+}
+
+func studentInformationsSortedByCacheKey(matches map[string]profile.StudentInformation) []profile.StudentInformation {
+	matchingKeys := make([]string, 0, len(matches))
+	for key := range matches {
+		matchingKeys = append(matchingKeys, key)
+	}
+	sort.Strings(matchingKeys)
+	var result []profile.StudentInformation
+	for _, key := range matchingKeys {
+		result = append(result, matches[key])
+	}
+	return result
 }
 
 // ========================

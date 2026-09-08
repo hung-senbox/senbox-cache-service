@@ -37,7 +37,7 @@ func (r *RedisCache) Get(ctx context.Context, key string, dest interface{}) erro
 	if err != nil {
 		return err
 	}
-	
+
 	// Nếu dest là *string, thử unmarshal JSON trước
 	// Nếu thất bại (có thể là plain string), gán trực tiếp
 	if strPtr, ok := dest.(*string); ok {
@@ -50,10 +50,15 @@ func (r *RedisCache) Get(ctx context.Context, key string, dest interface{}) erro
 		*strPtr = val
 		return nil
 	}
-	
+
 	return json.Unmarshal([]byte(val), dest)
 }
 
 func (r *RedisCache) Delete(ctx context.Context, key string) error {
 	return r.client.Del(ctx, key).Err()
+}
+
+// Scan returns a page of keys matching pattern and the cursor for the next page.
+func (r *RedisCache) Scan(ctx context.Context, cursor uint64, pattern string, count int64) ([]string, uint64, error) {
+	return r.client.Scan(ctx, cursor, pattern, count).Result()
 }
