@@ -11,6 +11,7 @@ import (
 type CachedDepartmentService interface {
 	GetHierarchyDepartmentCacheKey(ctx context.Context, organizationID string) ([]*department.Department, error)
 	GetAllLeaderAndStaffsByOrganizationID(ctx context.Context, organizationID string) ([]*department.Leader, []*department.Staff, error)
+	CheckOwnerIsInHierarchyDepartment(ctx context.Context, organizationID string, ownerId []string) (bool, error)
 }
 
 type cachedDepartmentService struct {
@@ -90,4 +91,40 @@ func (c *cachedDepartmentService) GetAllLeaderAndStaffsByOrganizationID(ctx cont
 	}
 
 	return leaders, staffs, nil
+}
+
+func (c *cachedDepartmentService) CheckOwnerIsInHierarchyDepartment(ctx context.Context, organizationID string, ownerId []string) (bool, error) {
+	if organizationID == "" || len(ownerId) == 0 {
+		return false, nil
+	}
+
+	leaders, staffs, err := c.GetAllLeaderAndStaffsByOrganizationID(ctx, organizationID)
+	if err != nil {
+		return false, err
+	}
+
+	hierarchyOwners := make(map[string]struct{}, len(leaders)+len(staffs))
+	for _, leader := range leaders {
+		if leader != nil && leader.OwnerID != "" {
+			hierarchyOwners[leader.OwnerID] = struct{}{}
+		}
+	}
+	for _, staff := range staffs {
+		if staff != nil && staff.OwnerID != "" {
+			hierarchyOwners[staff.OwnerID] = struct{}{}
+		}
+	}
+
+	hasOwnerID := false
+	for _, id := range ownerId {
+		if id == "" {
+			continue
+		}
+		hasOwnerID = true
+		if _, ok := hierarchyOwners[id]; !ok {
+			return false, nil
+		}
+	}
+
+	return hasOwnerID, nil
 }
