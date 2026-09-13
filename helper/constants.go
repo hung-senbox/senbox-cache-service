@@ -16,6 +16,7 @@ const (
 	S3ServicePrefix        CachePrefix = "s3-service:"
 	CountServicePrefix     CachePrefix = "count-service:"
 	MediaPrefix            CachePrefix = "media:"
+	DepartmentPrefix       CachePrefix = "department:"
 )
 
 type MediaCountSubType string
@@ -23,3 +24,5 @@ type MediaCountSubType string
 const (
 	MediaCountSubTypePortalByStudentID MediaCountSubType = "portal_by_student_id"
 )
+
+const HierarchyDepartmentPrefix string = "Hierarchy:"
