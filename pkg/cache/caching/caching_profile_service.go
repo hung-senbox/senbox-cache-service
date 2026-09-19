@@ -42,6 +42,9 @@ type CachingProfileService interface {
 	// Student Information
 	SetStudentInformation(ctx context.Context, studentID string, studentInformation *profile.StudentInformation) error
 
+	// Family
+	SetFamily(ctx context.Context, familyID string, family *profile.Family) error
+
 	InvalidateUserCode(ctx context.Context, userID string) error
 	InvalidateStudentCode(ctx context.Context, studentID string) error
 	InvalidateTeacherCode(ctx context.Context, teacherID string) error
@@ -329,6 +332,14 @@ func (s *cachingProfileService) SetStudentInformation(ctx context.Context, stude
 	}
 	key := keys.StudentInformationCacheKey(studentID)
 	return s.setByKeyWithJSON(ctx, key, studentInformation)
+}
+
+func (s *cachingProfileService) SetFamily(ctx context.Context, familyID string, family *profile.Family) error {
+	if familyID == "" || family == nil {
+		return nil
+	}
+	key := keys.FamilyCacheKey(familyID)
+	return s.setByKeyWithJSON(ctx, key, family)
 }
 
 // ========================

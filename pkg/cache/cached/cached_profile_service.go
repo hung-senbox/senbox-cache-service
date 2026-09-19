@@ -46,6 +46,9 @@ type CachedProfileGateway interface {
 
 	// Get student information
 	GetStudentInformationsByOrgId(ctx context.Context, orgID string) ([]*profile.StudentInformation, error)
+
+	// Get family
+	GetFamily(ctx context.Context, familyID string) (*profile.Family, error)
 }
 
 type cachedProfileService struct {
@@ -56,6 +59,19 @@ func NewCachedProfileGateway(cache *cache.RedisCache) CachedProfileGateway {
 	return &cachedProfileService{
 		cache: cache,
 	}
+}
+
+func (c *cachedProfileService) GetFamily(ctx context.Context, familyID string) (*profile.Family, error) {
+	if familyID == "" {
+		return nil, nil
+	}
+
+	var family *profile.Family
+	if err := c.cache.Get(ctx, keys.FamilyCacheKey(familyID), &family); err != nil {
+		return nil, err
+	}
+
+	return family, nil
 }
 
 // GetStudentInformationsByOrgId returns cached students for an organization,

@@ -109,3 +109,8 @@ func AllPermissionsCacheKey() string {
 func StudentInformationCacheKey(studentID string) string {
 	return string(helper.ProfileServicePrefix) + "student_information:" + studentID
 }
+
+// ======================== Family Cache Key ========================
+func FamilyCacheKey(familyID string) string {
+	return string(helper.ProfileServicePrefix) + "family:" + familyID
+}
