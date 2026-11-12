@@ -5,6 +5,7 @@ import (
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/user"
 )
 
 type CachedMainGateway interface {
@@ -18,6 +19,7 @@ type CachedMainGateway interface {
 	GetStaffByUserAndOrgCache(ctx context.Context, userID, orgID string) (map[string]interface{}, error)
 	GetUserByTeacherCache(ctx context.Context, teacherID string) (map[string]interface{}, error)
 	GetParentByUserCache(ctx context.Context, userID string) (map[string]interface{}, error)
+	GetStudentParentIDPairs(ctx context.Context) ([]user.StudentParentIDPair, error)
 
 	// ======================== Image Cache ========================
 	GetUserImageCache(ctx context.Context, userID string) (map[string]interface{}, error)
@@ -122,6 +124,17 @@ func (c *cachedMainService) GetParentByUserCache(ctx context.Context, userID str
 		return nil, nil
 	}
 	return getCache(c.cache, ctx, keys.ParentByUserCacheKey(userID))
+}
+
+func (c *cachedMainService) GetStudentParentIDPairs(ctx context.Context) ([]user.StudentParentIDPair, error) {
+	
+	var pairs []user.StudentParentIDPair
+
+	err := c.cache.Get(ctx, keys.StudentParentIDPairsCacheKey(), &pairs)
+	if err != nil {
+		return nil, err
+	}
+	return pairs, nil
 }
 
 // ======================== Image Cache ========================

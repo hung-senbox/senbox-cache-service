@@ -5,6 +5,7 @@ import (
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/user"
 )
 
 type CachingMainService interface {
@@ -18,6 +19,8 @@ type CachingMainService interface {
 	SetStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string, data interface{}) error
 	SetUserByTeacherCacheKey(ctx context.Context, teacherID string, data interface{}) error
 	SetParentByUserCacheKey(ctx context.Context, userID string, data interface{}) error
+	SetStudentParentIDPairs(ctx context.Context, pairs []user.StudentParentIDPair) error
+
 	// ========================
 	// === IMAGE CACHE ===
 	// ========================
@@ -51,6 +54,7 @@ type CachingMainService interface {
 	InvalidateParentByUserCacheKey(ctx context.Context, userID string) error
 	InvalidateTeacherByUserAndOrgCacheKey(ctx context.Context, userID, orgID string) error
 	InvalidateStaffByUserAndOrgCacheKey(ctx context.Context, userID, orgID string) error
+	InvalidateStudentParentIDPairs(ctx context.Context) error
 	// ========================
 	// === IMAGE CACHE ===
 	// ========================
@@ -171,6 +175,19 @@ func (s *cachingMainService) SetParentByUserCacheKey(ctx context.Context, userID
 	}
 	return s.setByKey(ctx, keys.ParentByUserCacheKey(userID), data)
 }
+
+func (s *cachingMainService) SetStudentParentIDPairs(ctx context.Context, pairs []user.StudentParentIDPair) error {
+	if pairs == nil {
+		pairs = []user.StudentParentIDPair{}
+	}
+
+	return s.setByKey(ctx, keys.StudentParentIDPairsCacheKey(), pairs)
+}
+
+func (s *cachingMainService) InvalidateStudentParentIDPairs(ctx context.Context) error {
+	return s.deleteByKey(ctx,  keys.StudentParentIDPairsCacheKey())
+}
+
 
 // ======================== Image Cache ========================
 

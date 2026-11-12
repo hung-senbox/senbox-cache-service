@@ -22,3 +22,8 @@ type UserResponse struct {
 	ReLoginWeb   bool      `json:"re_login_web"`
 	CreatedIndex int       `json:"created_index"`
 }
+
+type CorrespondingID_pairBetweenStudentAndParent struct {
+	ParentID  string `json:"parentid"`
+	StudentID string `json:"studentid"`
+}
