@@ -9,9 +9,14 @@ import (
 )
 
 type CachedDepartmentService interface {
+	// ======================== HIEARCHY DEPARTMENT ========================
 	GetHierarchyDepartmentCacheKey(ctx context.Context, organizationID string) ([]*department.Department, error)
 	GetAllLeaderAndStaffsByOrganizationID(ctx context.Context, organizationID string) ([]*department.Leader, []*department.Staff, error)
 	CheckOwnerIsInHierarchyDepartment(ctx context.Context, organizationID string, ownerIds []string) (bool, error)
+	// ======================== CLEANER DEPARTMENT ========================
+	GetCleanerDepartmentCacheKey(ctx context.Context, organizationID string) ([]*department.Department, error)
+	GetAllLeaderAndStaffsByOrganizationIDCleaner(ctx context.Context, organizationID string) ([]*department.Leader, []*department.Staff, error)
+	CheckOwnerIsInCleanerDepartment(ctx context.Context, organizationID string, ownerIds []string) (bool, error)
 }
 
 type cachedDepartmentService struct {
@@ -55,6 +60,71 @@ func (c *cachedDepartmentService) GetAllLeaderAndStaffsByOrganizationID(ctx cont
 		return nil, nil, nil
 	}
 
+	leaders, staffs := collectLeadersAndStaffs(departments)
+	return leaders, staffs, nil
+}
+
+func (c *cachedDepartmentService) CheckOwnerIsInHierarchyDepartment(ctx context.Context, organizationID string, ownerIds []string) (bool, error) {
+	if organizationID == "" || len(ownerIds) == 0 {
+		return false, nil
+	}
+
+	leaders, staffs, err := c.GetAllLeaderAndStaffsByOrganizationID(ctx, organizationID)
+	if err != nil {
+		return false, err
+	}
+
+	return ownerExistsIn(leaders, staffs, ownerIds), nil
+}
+
+// ===================================== CLEANER DEPARTMENT =====================================
+func (c *cachedDepartmentService) GetCleanerDepartmentCacheKey(ctx context.Context, organizationID string) ([]*department.Department, error) {
+	if organizationID == "" {
+		return nil, nil
+	}
+
+	var result []*department.Department
+	if err := c.cache.Get(ctx, keys.GetOrganizationCleanerDepartmentCacheKey(organizationID), &result); err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return nil, nil
+	}
+
+	return result, nil
+}
+
+func (c *cachedDepartmentService) GetAllLeaderAndStaffsByOrganizationIDCleaner(ctx context.Context, organizationID string) ([]*department.Leader, []*department.Staff, error) {
+	if organizationID == "" {
+		return nil, nil, nil
+	}
+
+	departments, err := c.GetCleanerDepartmentCacheKey(ctx, organizationID)
+	if err != nil {
+		return nil, nil, err
+	}
+	if len(departments) == 0 {
+		return nil, nil, nil
+	}
+
+	leaders, staffs := collectLeadersAndStaffs(departments)
+	return leaders, staffs, nil
+}
+
+func (c *cachedDepartmentService) CheckOwnerIsInCleanerDepartment(ctx context.Context, organizationID string, ownerIds []string) (bool, error) {
+	if organizationID == "" || len(ownerIds) == 0 {
+		return false, nil
+	}
+
+	leaders, staffs, err := c.GetAllLeaderAndStaffsByOrganizationIDCleaner(ctx, organizationID)
+	if err != nil {
+		return false, err
+	}
+
+	return ownerExistsIn(leaders, staffs, ownerIds), nil
+}
+
+func collectLeadersAndStaffs(departments []*department.Department) ([]*department.Leader, []*department.Staff) {
 	leaders := make([]*department.Leader, 0)
 	staffs := make([]*department.Staff, 0)
 	seenLeaders := make(map[string]struct{})
@@ -87,31 +157,22 @@ func (c *cachedDepartmentService) GetAllLeaderAndStaffsByOrganizationID(ctx cont
 	}
 
 	if len(leaders) == 0 && len(staffs) == 0 {
-		return nil, nil, nil
+		return nil, nil
 	}
 
-	return leaders, staffs, nil
+	return leaders, staffs
 }
 
-func (c *cachedDepartmentService) CheckOwnerIsInHierarchyDepartment(ctx context.Context, organizationID string, ownerIds []string) (bool, error) {
-	if organizationID == "" || len(ownerIds) == 0 {
-		return false, nil
-	}
-
-	leaders, staffs, err := c.GetAllLeaderAndStaffsByOrganizationID(ctx, organizationID)
-	if err != nil {
-		return false, err
-	}
-
-	hierarchyOwners := make(map[string]struct{}, len(leaders)+len(staffs))
+func ownerExistsIn(leaders []*department.Leader, staffs []*department.Staff, ownerIds []string) bool {
+	owners := make(map[string]struct{}, len(leaders)+len(staffs))
 	for _, leader := range leaders {
 		if leader != nil && leader.OwnerID != "" {
-			hierarchyOwners[leader.OwnerID] = struct{}{}
+			owners[leader.OwnerID] = struct{}{}
 		}
 	}
 	for _, staff := range staffs {
 		if staff != nil && staff.OwnerID != "" {
-			hierarchyOwners[staff.OwnerID] = struct{}{}
+			owners[staff.OwnerID] = struct{}{}
 		}
 	}
 
@@ -119,9 +180,9 @@ func (c *cachedDepartmentService) CheckOwnerIsInHierarchyDepartment(ctx context.
 		if id == "" {
 			continue
 		}
-		if _, ok := hierarchyOwners[id]; ok {
-			return true, nil
+		if _, ok := owners[id]; ok {
+			return true
 		}
 	}
-	return false, nil
+	return false
 }

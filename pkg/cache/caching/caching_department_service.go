@@ -10,7 +10,9 @@ import (
 
 type CachingDepartmentService interface {
 	SetHierarchyDepartmentCacheKey(ctx context.Context, organizationID string, hierarchyDepartments []*department.Department) error
+	SetCleanerDepartmentCacheKey(ctx context.Context, organizationID string, cleanerDepartments []*department.Department) error
 	InvalidateHierarchyDepartmentCacheKey(ctx context.Context, organizationID string) error
+	InvalidateCleanerDepartmentCacheKey(ctx context.Context, organizationID string) error
 }
 
 type cachingDepartmentService struct {
@@ -47,6 +49,13 @@ func (s *cachingDepartmentService) SetHierarchyDepartmentCacheKey(ctx context.Co
 	return s.setByKey(ctx, keys.GetOrganizationHierarchyDepartmentCacheKey(organizationID), hierarchyDepartments)
 }
 
+func (s *cachingDepartmentService) SetCleanerDepartmentCacheKey(ctx context.Context, organizationID string, cleanerDepartments []*department.Department) error {
+	if organizationID == "" || cleanerDepartments == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.GetOrganizationCleanerDepartmentCacheKey(organizationID), cleanerDepartments)
+}
+
 // ========================
 // === INVALIDATE CACHE ===
 // ========================
@@ -56,4 +65,11 @@ func (s *cachingDepartmentService) InvalidateHierarchyDepartmentCacheKey(ctx con
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.GetOrganizationHierarchyDepartmentCacheKey(organizationID))
+}
+
+func (s *cachingDepartmentService) InvalidateCleanerDepartmentCacheKey(ctx context.Context, organizationID string) error {
+	if organizationID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.GetOrganizationCleanerDepartmentCacheKey(organizationID))
 }

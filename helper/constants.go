@@ -26,3 +26,4 @@ const (
 )
 
 const HierarchyDepartmentPrefix string = "Hierarchy:"
+const CleanerDepartmentPrefix string = "Cleaner:"
