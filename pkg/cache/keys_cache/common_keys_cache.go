@@ -13,3 +13,7 @@ func GetLanguageByIdCacheKey(languageID uint) string {
 func GetOccupationByIdAndLanguageIdCacheKey(occupationID string, languageID uint) string {
 	return string(helper.CommonServicePrefix) + "occupation_by_id_and_language_id:" + occupationID + ":" + strconv.FormatUint(uint64(languageID), 10)
 }
+
+func GetOrganizationSettingByOrganizationIDCacheKey(organizationID string) string {
+	return string(helper.CommonServicePrefix) + "organization_setting_by_organization_id:" + organizationID
+}

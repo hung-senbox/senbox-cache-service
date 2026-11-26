@@ -5,9 +5,13 @@ import (
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
+	"github.com/hung-senbox/senbox-cache-service/pkg/model/common"
 )
 
 type CachingCommonService interface {
+	SetOrganizationSettingByOrganizationID(ctx context.Context, organizationID string, setting *common.OrganizationSetting) error
+	InvalidateOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) error
+
 	// ======================== Language Cache ========================
 	SetLanguageById(ctx context.Context, languageID uint, data interface{}) error
 	InvalidateLanguageById(ctx context.Context, languageID uint) error
@@ -74,4 +78,18 @@ func (s *cachingCommonService) InvalidateOccupationByIdAndLanguageId(ctx context
 		return nil
 	}
 	return s.deleteByKey(ctx, keys.GetOccupationByIdAndLanguageIdCacheKey(occupationID, languageID))
+}
+
+func (s *cachingCommonService) SetOrganizationSettingByOrganizationID(ctx context.Context, organizationID string, setting *common.OrganizationSetting) error {
+	if organizationID == "" || setting == nil {
+		return nil
+	}
+	return s.setByKey(ctx, keys.GetOrganizationSettingByOrganizationIDCacheKey(organizationID), setting)
+}
+
+func (s *cachingCommonService) InvalidateOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) error {
+	if organizationID == "" {
+		return nil
+	}
+	return s.deleteByKey(ctx, keys.GetOrganizationSettingByOrganizationIDCacheKey(organizationID))
 }
