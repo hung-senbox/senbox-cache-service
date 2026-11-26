@@ -9,6 +9,7 @@ import (
 )
 
 type CachingCommonService interface {
+	// ======================== Organization Setting Cache ========================
 	SetOrganizationSettingByOrganizationID(ctx context.Context, organizationID string, setting *common.OrganizationSetting) error
 	InvalidateOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) error
 
