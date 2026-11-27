@@ -20,6 +20,16 @@ type CachedProfileGateway interface {
 	GetOrganizationCode(ctx context.Context, organizationID string) (string, error)
 	GetChildEnrollment(ctx context.Context, childID string) (map[string]interface{}, error)
 
+	// Code map methods return non-empty cached codes keyed by ID.
+	GetUserCodeMap(ctx context.Context, userIds []string) (map[string]string, error)
+	GetStudentCodeMap(ctx context.Context, studentIds []string) (map[string]string, error)
+	GetTeacherCodeMap(ctx context.Context, teacherIds []string) (map[string]string, error)
+	GetStaffCodeMap(ctx context.Context, staffIds []string) (map[string]string, error)
+	GetParentCodeMap(ctx context.Context, parentIds []string) (map[string]string, error)
+	GetChildCodeMap(ctx context.Context, childIds []string) (map[string]string, error)
+	GetDeviceCodeMap(ctx context.Context, deviceIds []string) (map[string]string, error)
+	GetOrganizationCodeMap(ctx context.Context, organizationIds []string) (map[string]string, error)
+
 	// language setting cache key
 	GetStudentLanguageSetting(ctx context.Context, studentID string) (map[string]interface{}, error)
 	GetTeacherLanguageSetting(ctx context.Context, teacherID string) (map[string]interface{}, error)
@@ -208,6 +218,58 @@ func (c *cachedProfileService) GetOrganizationCode(ctx context.Context, organiza
 		return "", nil
 	}
 	return getCacheString(c.cache, ctx, keys.OrganizationCodeCacheKey(organizationID))
+}
+
+func (c *cachedProfileService) GetUserCodeMap(ctx context.Context, userIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, userIDs, c.GetUserCode)
+}
+
+func (c *cachedProfileService) GetStudentCodeMap(ctx context.Context, studentIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, studentIDs, c.GetStudentCode)
+}
+
+func (c *cachedProfileService) GetTeacherCodeMap(ctx context.Context, teacherIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, teacherIDs, c.GetTeacherCode)
+}
+
+func (c *cachedProfileService) GetStaffCodeMap(ctx context.Context, staffIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, staffIDs, c.GetStaffCode)
+}
+
+func (c *cachedProfileService) GetParentCodeMap(ctx context.Context, parentIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, parentIDs, c.GetParentCode)
+}
+
+func (c *cachedProfileService) GetChildCodeMap(ctx context.Context, childIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, childIDs, c.GetChildCode)
+}
+
+func (c *cachedProfileService) GetDeviceCodeMap(ctx context.Context, deviceIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, deviceIDs, c.GetDeviceCode)
+}
+
+func (c *cachedProfileService) GetOrganizationCodeMap(ctx context.Context, organizationIDs []string) (map[string]string, error) {
+	return getProfileCodeMap(ctx, organizationIDs, c.GetOrganizationCode)
+}
+
+func getProfileCodeMap(ctx context.Context, ids []string, getCode func(context.Context, string) (string, error)) (map[string]string, error) {
+	codes := make(map[string]string)
+	for _, id := range ids {
+		if id == "" {
+			continue
+		}
+		if _, found := codes[id]; found {
+			continue
+		}
+		code, err := getCode(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		if code != "" {
+			codes[id] = code
+		}
+	}
+	return codes, nil
 }
 
 func (c *cachedProfileService) GetChildEnrollment(ctx context.Context, childID string) (map[string]interface{}, error) {
