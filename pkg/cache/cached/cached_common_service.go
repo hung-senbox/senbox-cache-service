@@ -10,6 +10,7 @@ import (
 
 type CachedCommonGateway interface {
 	GetOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) (*common.OrganizationSetting, error)
+	GetOrganizationSettingByOrganizationIds(ctx context.Context, organizationIds []string) (map[string]*common.OrganizationSetting, error)
 
 	// ======================== Language Cache ========================
 	GetLanguageById(ctx context.Context, languageID uint) (map[string]interface{}, error)
@@ -56,4 +57,27 @@ func (c *cachedCommonService) GetOrganizationSettingByOrganizationID(ctx context
 		return nil, err
 	}
 	return setting, nil
+}
+
+func (c *cachedCommonService) GetOrganizationSettingByOrganizationIds(ctx context.Context, organizationIds []string) (map[string]*common.OrganizationSetting, error) {
+	settings := make(map[string]*common.OrganizationSetting)
+	seen := make(map[string]struct{}, len(organizationIds))
+	for _, organizationID := range organizationIds {
+		if organizationID == "" {
+			continue
+		}
+		if _, exists := seen[organizationID]; exists {
+			continue
+		}
+		seen[organizationID] = struct{}{}
+
+		setting, err := c.GetOrganizationSettingByOrganizationID(ctx, organizationID)
+		if err != nil {
+			return nil, err
+		}
+		if setting != nil {
+			settings[organizationID] = setting
+		}
+	}
+	return settings, nil
 }

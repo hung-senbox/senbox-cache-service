@@ -2,6 +2,7 @@ package caching
 
 import (
 	"context"
+	_ "embed"
 
 	"github.com/hung-senbox/senbox-cache-service/pkg/cache"
 	keys "github.com/hung-senbox/senbox-cache-service/pkg/cache/keys_cache"
@@ -11,6 +12,7 @@ import (
 type CachingCommonService interface {
 	// ======================== Organization Setting Cache ========================
 	SetOrganizationSettingByOrganizationID(ctx context.Context, organizationID string, setting *common.OrganizationSetting) error
+	CountDownMediaByOrganizationID(ctx context.Context, organizationID string, quantity int) error
 	InvalidateOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) error
 
 	// ======================== Language Cache ========================
@@ -86,6 +88,17 @@ func (s *cachingCommonService) SetOrganizationSettingByOrganizationID(ctx contex
 		return nil
 	}
 	return s.setByKey(ctx, keys.GetOrganizationSettingByOrganizationIDCacheKey(organizationID), setting)
+}
+
+//go:embed scripts/count_down_media.lua
+var countDownMediaScript string
+
+func (s *cachingCommonService) CountDownMediaByOrganizationID(ctx context.Context, organizationID string, quantity int) error {
+	if organizationID == "" || quantity <= 0 {
+		return nil
+	}
+	key := keys.GetOrganizationSettingByOrganizationIDCacheKey(organizationID)
+	return s.cache.Eval(ctx, countDownMediaScript, []string{key}, quantity)
 }
 
 func (s *cachingCommonService) InvalidateOrganizationSettingByOrganizationID(ctx context.Context, organizationID string) error {
